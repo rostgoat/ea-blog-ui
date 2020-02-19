@@ -72,8 +72,7 @@ export default class Register extends Vue {
   }
 
   onClickLogin() {
-    console.log("ok wtf");
-    this.$emit("toggleLogin", true);
+    this.$router.push("login");
   }
 }
 </script>
