@@ -1,12 +1,14 @@
 <template>
-  <v-app>
-    <v-app-bar app dark>
+  <v-app class="default-layout">
+    <v-app-bar app dark class="default-layout__navbar">
       <v-toolbar-title>EA Games Blog</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-icon @click="loginOrRegister">mdi-account-circle</v-icon>
     </v-app-bar>
-    <v-content>
-      <router-view />
+    <v-content class="default-layout__main-content">
+      <transition name="fade" mode="out-in">
+        <router-view />
+      </transition>
     </v-content>
   </v-app>
 </template>
@@ -24,3 +26,10 @@ export default class App extends Vue {
   }
 }
 </script>
+<style lang="scss">
+.default-layout {
+  &__main-content {
+    transition: map-get($transitions, fade);
+  }
+}
+</style>
