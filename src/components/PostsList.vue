@@ -1,13 +1,14 @@
 <template>
   <v-app>
-    <PostListItem />
-    <PostListItem />
+    <div v-for="post in posts" :key="post.id">
+      <PostListItem :post="post" />
+    </div>
   </v-app>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 import PostListItem from "@/components/PostsListItem.vue";
 
 @Component({
@@ -15,6 +16,19 @@ import PostListItem from "@/components/PostsListItem.vue";
 })
 export default class PostsList extends Vue {
   name = "PostsList";
+  posts = [
+    {
+      id: 1,
+      title: "Call of Duty: Black Ops 4",
+      content: `Integer vitae tellus ut quam convallis vestibulum. Duis tristique
+          lacus augue, sed mollis turpis scelerisque nec. Donec imperdiet
+          accumsan fermentum. Morbi quis metus congue diam aliquam commodo.
+          Maecenas eu justo at ante aliquam semper. Aenean accumsan nulla ac
+          felis blandit, nec tristique purus pulvinar.`,
+      author: "Evan You",
+      date: "Feb 14, 2020"
+    }
+  ];
 }
 </script>
 

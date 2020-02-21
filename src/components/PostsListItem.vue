@@ -10,24 +10,20 @@
         ></v-img>
       </v-card>
       <v-card flat class="posts-list-item__description-container">
-        <v-card-title class="mb-4 posts-list-item__title"
-          >Call of Duty: Black Ops 4</v-card-title
-        >
+        <v-card-title class="mb-4 posts-list-item__title">{{
+          post.title
+        }}</v-card-title>
         <v-card-subtitle class="posts-list-item__subtitle">
-          Integer vitae tellus ut quam convallis vestibulum. Duis tristique
-          lacus augue, sed mollis turpis scelerisque nec. Donec imperdiet
-          accumsan fermentum. Morbi quis metus congue diam aliquam commodo.
-          Maecenas eu justo at ante aliquam semper. Aenean accumsan nulla ac
-          felis blandit, nec tristique purus pulvinar.
+          {{ post.content }}
         </v-card-subtitle>
 
         <div class="posts-list-item__actions mt-3">
           <div class="posts-list-item__actions-author">
-            Evan You
+            {{ post.author }}
           </div>
 
           <div class="posts-list-item__actions-date">
-            Feb 14, 2020
+            {{ post.date }}
           </div>
 
           <v-row
@@ -53,6 +49,7 @@ import { Component, Prop } from "vue-property-decorator";
 @Component
 export default class PostsListItem extends Vue {
   name = "PostsListItem";
+  @Prop() post!: object;
 }
 </script>
 
