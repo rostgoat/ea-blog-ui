@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <div v-for="post in posts" :key="post.id">
+    <div v-for="post in posts" :key="post.id" class="posts-list">
       <PostListItem :post="post" />
     </div>
   </v-app>
@@ -27,56 +27,30 @@ export default class PostsList extends Vue {
           felis blandit, nec tristique purus pulvinar.`,
       author: "Evan You",
       date: "Feb 14, 2020"
+    },
+    {
+      id: 2,
+      title: "Battlefield 1: Return of the Nazis",
+      content: `Integer vitae tellus ut quam convallis vestibulum. Duis tristique
+          lacus augue, sed mollis turpis scelerisque nec. Donec imperdiet
+          accumsan fermentum. Morbi quis metus congue diam aliquam commodo.
+          Maecenas eu justo at ante aliquam semper. Aenean accumsan nulla ac
+          felis blandit, nec tristique purus pulvinar.`,
+      author: "Johnny Lee",
+      date: "Jan 1, 2020"
     }
   ];
 }
 </script>
 
 <style lang="scss">
-.posts-list-item {
-  &__content {
-    display: flex;
-  }
+.posts-list {
+  display: flex;
+  flex-direction: column;
 
-  &-img {
-    background-position: 53% 53% !important;
-  }
-
-  &____img-container {
-    width: 33%;
-  }
-  &____description-container {
-    width: 66%;
-    display: flex;
-    flex-direction: column;
-    align-content: stretch;
-  }
-
-  &__title {
-    font-size: 2rem !important;
-  }
-
-  &__actions {
-    display: flex;
-    margin: 1rem;
-    margin-right: 4rem;
-    justify-content: center;
-    align-items: center;
-
-    &-author {
-      font-size: 0.9rem;
-      font-weight: 300;
-    }
-
-    &-date {
-      font-size: 0.8rem;
-      color: grey;
-      margin-left: 1rem;
-    }
-
-    &-buttons {
-      font-size: 0.8rem;
-    }
+  .posts-list-item__content:nth-child(odd) {
+    background-color: aqua;
+    flex-direction: row-reverse;
   }
 }
 </style>

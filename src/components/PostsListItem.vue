@@ -1,15 +1,16 @@
 <template>
   <v-card class="mx-auto mt-5 posts-list-item" outlined>
     <v-container class="posts-list-item__content">
-      <v-card flat class="posts-list-item__img-container">
+      <v-card flat class="posts-list-item__container posts-list-item__image">
         <v-img
           class="pa-2 posts-list-item__img"
           src="https://picsum.photos/510/300?random"
-          max-width="300"
-          max-height="300"
         ></v-img>
       </v-card>
-      <v-card flat class="posts-list-item__description-container">
+      <v-card
+        flat
+        class="posts-list-item__container posts-list-item__description"
+      >
         <v-card-title class="mb-4 posts-list-item__title">{{
           post.title
         }}</v-card-title>
@@ -55,18 +56,21 @@ export default class PostsListItem extends Vue {
 
 <style lang="scss">
 .posts-list-item {
+  width: 90% !important;
+  margin: auto !important;
   &__content {
-    display: flex;
+    display: flex !important;
   }
 
-  &-img {
-    background-position: 53% 53% !important;
+  &__container {
+    margin: none !important;
   }
 
-  &____img-container {
+  &__image {
     width: 33%;
   }
-  &____description-container {
+
+  &__description {
     width: 66%;
     display: flex;
     flex-direction: column;
