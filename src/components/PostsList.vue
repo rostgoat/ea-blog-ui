@@ -45,11 +45,7 @@ export default class PostsList extends Vue {
 
 <style lang="scss">
 .posts-list {
-  display: flex;
-  flex-direction: column;
-
-  .posts-list-item__content:nth-child(odd) {
-    background-color: aqua;
+  &:nth-child(even) > .posts-list-item > .posts-list-item__content {
     flex-direction: row-reverse;
   }
 }
