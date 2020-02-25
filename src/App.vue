@@ -27,6 +27,7 @@ export default class App extends Vue {
 }
 </script>
 <style lang="scss">
+@import "assets/styles/index.scss";
 .default-layout {
   &__main-content {
     transition: map-get($transitions, fade);
