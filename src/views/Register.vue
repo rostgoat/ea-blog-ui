@@ -47,7 +47,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
-
+import axios from "axios";
 @Component
 export default class Register extends Vue {
   name = "Register";
@@ -60,7 +60,7 @@ export default class Register extends Vue {
   registerPassword = null;
   registerPasswordConfirm = null;
 
-  onClickRegister() {
+  async onClickRegister() {
     const userToRegister = {
       name: this.registerName,
       username: this.registerUsername,
