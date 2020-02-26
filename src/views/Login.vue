@@ -51,9 +51,6 @@ export default class Login extends Vue {
       password: this.loginPassword
     };
 
-    this.$socket.client.emit("msgToServer", {
-      title: "cod"
-    });
     console.log("userToLogin", userToLogin);
   }
 

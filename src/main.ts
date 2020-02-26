@@ -7,14 +7,13 @@ import Vuetify from "vuetify";
 import "vuetify/dist/vuetify.min.css";
 import VueSocketIOExt from "vue-socket.io-extended";
 import io from "socket.io-client";
-// import NestClient from "@/plugins/nest";
 
 async function start() {
   Vue.use(Vuetify);
   Vue.config.productionTip = false;
 
-  const url = "http://localhost:3000";
-  const socket = io(url);
+  const serverUrl = process.env.VUE_APP_SERVER_URL;
+  const socket = io(serverUrl);
 
   Vue.use(VueSocketIOExt, socket);
 
@@ -22,7 +21,7 @@ async function start() {
     sockets: {
       connect() {
         this.$socket.client.emit("connected", {
-          title: "cod"
+          title: "Client Connected"
         });
         this.$socket.client.on("connected", (data: string) =>
           console.log(data)
