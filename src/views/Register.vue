@@ -8,26 +8,35 @@
         <v-form>
           <v-text-field
             label="Name"
-            v-model="registerName"
+            v-model="registrationForm.name"
             prepend-icon="mdi-account-circle"
           ></v-text-field>
           <v-text-field
             label="Username"
-            v-model="registerUsername"
+            :rules="usernameRules"
+            v-model="registrationForm.username"
+            prepend-icon="mdi-account-circle"
+          ></v-text-field>
+          <v-text-field
+            label="Email"
+            :rules="emailRules"
+            v-model="registrationForm.email"
             prepend-icon="mdi-account-circle"
           ></v-text-field>
           <v-text-field
             :type="showPassword ? 'text' : 'password'"
             label="Password"
-            v-model="registerPassword"
+            :rules="passwordRules"
+            v-model="registrationForm.password"
             prepend-icon="mdi-lock"
             :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
             @click:append="showPassword = !showPassword"
           ></v-text-field>
           <v-text-field
             :type="showPassword ? 'text' : 'password'"
+            :rules="passwordConfirmRules"
             label="Confirm Password"
-            v-model="registerPasswordConfirm"
+            v-model="registrationForm.passwordConfirm"
             prepend-icon="mdi-lock"
             :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
             @click:append="showPassword = !showPassword"
@@ -47,7 +56,9 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
+import { emailRegex, passwordRegex, usernameRegex } from "@/utils/validators";
 import axios from "axios";
+
 @Component
 export default class Register extends Vue {
   name = "Register";
@@ -55,20 +66,61 @@ export default class Register extends Vue {
 
   @Prop() toggleRegister!: boolean;
 
-  registerName = null;
-  registerUsername = null;
-  registerPassword = null;
-  registerPasswordConfirm = null;
+  emailRules = [
+    (email: string) => !!email || "E-mail is required",
+    (email: string) => emailRegex.test(email) || "E-mail must be valid"
+  ];
+
+  usernameRules = [
+    (username: string) => !!username || "Username is required",
+    (username: string) =>
+      usernameRegex.test(username) ||
+      "Username must be between 7 to 14 characters which contain only characters, numeric digits, underscore and first character must be a letter"
+  ];
+
+  passwordRules = [
+    (password: string) => !!password || "Password is required",
+    (password: string) =>
+      passwordRegex.test(password) ||
+      "Password must contain a minimum of eight characters, at least one uppercase letter, at least one lowercase letter, one number and one special character"
+  ];
+
+  passwordConfirmRules = [
+    (passwordConfirm: string) =>
+      !!passwordConfirm || "Confirm password is required",
+    (passwordConfirm: string) =>
+      passwordConfirm === this.registrationForm.password ||
+      "Passwords don't match"
+  ];
+
+  registrationForm = {
+    name: null,
+    username: null,
+    email: null,
+    password: null,
+    passwordConfirm: null
+  };
 
   async onClickRegister() {
     const userToRegister = {
-      name: this.registerName,
-      username: this.registerUsername,
-      password: this.registerPassword,
-      passwordConfirm: this.registerPasswordConfirm
+      name: this.registrationForm.name,
+      username: this.registrationForm.username,
+      email: this.registrationForm.email,
+      password: this.registrationForm.password,
+      passwordConfirm: this.registrationForm.passwordConfirm
     };
 
-    console.log("userToRegister", userToRegister);
+    try {
+      const registerNewUser = await axios.post(
+        "/auth/register",
+        userToRegister
+      );
+      if (registerNewUser) {
+        this.$router.push("login");
+      }
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   onClickLogin() {
