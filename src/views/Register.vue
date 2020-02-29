@@ -1,14 +1,14 @@
 <template>
   <v-app class="register-container">
-    <v-btn @click="show = !show">animate</v-btn>
+    <!-- <v-btn @click="show = !show">animate</v-btn>
     <v-alert
       transition="scale-transition"
       class="transition-swing alert-transition"
       v-show="show"
     >
       some shitty text
-    </v-alert>
-    <!-- <ToastManager :toast="registrationToast" v-if="registrationToast.show" /> -->
+    </v-alert> -->
+    <ToastManager :toast="registrationToast" />
     <v-card width="400" class="mx-auto mt-5 register-card">
       <v-card-title>
         <h1 class="display-1">Register</h1>
@@ -174,36 +174,10 @@ export default class Register extends Vue {
 }
 </script>
 <style lang="scss">
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
-  transform: translateX(-100px) rotateZ(90deg);
-}
-
-.fade-enter-to,
-.fade-leave {
-  opacity: 1;
-  transform: translateX(0px) rotateZ(0deg);
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s ease-in-out, transform 0.5 ease;
-}
-
-.alert-transition {
-  position: absolute;
-  z-index: 1000;
-}
 .register-card {
   position: fixed !important;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-}
-
-.register-container {
-  display: flex;
-  align-items: center;
 }
 </style>
