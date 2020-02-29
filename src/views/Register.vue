@@ -1,6 +1,15 @@
 <template>
-  <v-app>
-    <v-card width="400" class="mx-auto mt-5">
+  <v-app class="register-container">
+    <v-btn @click="show = !show">animate</v-btn>
+    <v-alert
+      transition="scale-transition"
+      class="transition-swing alert-transition"
+      v-show="show"
+    >
+      some shitty text
+    </v-alert>
+    <!-- <ToastManager :toast="registrationToast" v-if="registrationToast.show" /> -->
+    <v-card width="400" class="mx-auto mt-5 register-card">
       <v-card-title>
         <h1 class="display-1">Register</h1>
       </v-card-title>
@@ -59,13 +68,16 @@ import { Component, Prop } from "vue-property-decorator";
 import { emailRegex, passwordRegex, usernameRegex } from "@/utils/validators";
 import axios from "axios";
 
-@Component
+import ToastManager from "@/components/ToastManager.vue";
+@Component({
+  components: { ToastManager }
+})
 export default class Register extends Vue {
   name = "Register";
   showPassword = false;
 
   @Prop() toggleRegister!: boolean;
-
+  show = false;
   emailRules = [
     (email: string) => !!email || "E-mail is required",
     (email: string) => emailRegex.test(email) || "E-mail must be valid"
@@ -101,6 +113,20 @@ export default class Register extends Vue {
     passwordConfirm: null
   };
 
+  registrationSuccess = false;
+  registrationFailure = false;
+
+  registrationToast = {
+    type: "sucess",
+    text: "",
+    show: false
+  };
+
+  loading = {
+    error: false,
+    registering: false
+  };
+
   async onClickRegister() {
     const userToRegister = {
       name: this.registrationForm.name,
@@ -116,11 +142,30 @@ export default class Register extends Vue {
         userToRegister
       );
       if (registerNewUser) {
-        this.$router.push("login");
+        this.onRegistrationSuccess();
       }
     } catch (error) {
+      this.onRegistrationFailure();
       throw new Error(error);
     }
+  }
+
+  onRegistrationSuccess() {
+    setTimeout(() => {
+      this.registrationSuccess = true;
+    }, 2000);
+    this.registrationSuccess = false;
+
+    // this.$router.push("login");
+  }
+
+  onRegistrationFailure() {
+    this.registrationToast = {
+      type: "error",
+      text: "Failure during reg",
+      show: true
+    };
+    this.registrationFailure = true;
   }
 
   onClickLogin() {
@@ -128,3 +173,37 @@ export default class Register extends Vue {
   }
 }
 </script>
+<style lang="scss">
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+  transform: translateX(-100px) rotateZ(90deg);
+}
+
+.fade-enter-to,
+.fade-leave {
+  opacity: 1;
+  transform: translateX(0px) rotateZ(0deg);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease-in-out, transform 0.5 ease;
+}
+
+.alert-transition {
+  position: absolute;
+  z-index: 1000;
+}
+.register-card {
+  position: fixed !important;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.register-container {
+  display: flex;
+  align-items: center;
+}
+</style>
