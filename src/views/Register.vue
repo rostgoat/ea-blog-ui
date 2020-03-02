@@ -1,14 +1,8 @@
 <template>
   <v-app class="register-container">
-    <!-- <v-btn @click="show = !show">animate</v-btn>
-    <v-alert
-      transition="scale-transition"
-      class="transition-swing alert-transition"
-      v-show="show"
-    >
-      some shitty text
-    </v-alert> -->
-    <ToastManager :toast="registrationToast" />
+    <div class="registration-alert">
+      <ToastManager :toast="registrationToast" />
+    </div>
     <v-card width="400" class="mx-auto mt-5 register-card">
       <v-card-title>
         <h1 class="display-1">Register</h1>
@@ -179,5 +173,13 @@ export default class Register extends Vue {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+}
+
+.registration-alert {
+  margin-top: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 </style>
