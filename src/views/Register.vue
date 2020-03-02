@@ -100,11 +100,11 @@ export default class Register extends Vue {
   ];
 
   registrationForm = {
-    name: null,
-    username: null,
-    email: null,
-    password: null,
-    passwordConfirm: null
+    name: "",
+    username: "",
+    email: "",
+    password: "",
+    passwordConfirm: ""
   };
 
   registrationSuccess = false;

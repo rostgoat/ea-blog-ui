@@ -34,14 +34,15 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
+import users from "@/store/modules/users";
 
 @Component
 export default class Login extends Vue {
   name = "Login";
   showPassword = false;
 
-  loginUsername = null;
-  loginPassword = null;
+  loginUsername = "";
+  loginPassword = "";
 
   @Prop() toggleLogin!: boolean;
 
@@ -50,8 +51,8 @@ export default class Login extends Vue {
       username: this.loginUsername,
       password: this.loginPassword
     };
-
-    console.log("userToLogin", userToLogin);
+    const response = users.login(userToLogin);
+    console.log("response", response);
   }
 
   onClickRegister() {

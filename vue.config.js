@@ -9,5 +9,5 @@ module.exports = {
       }
     }
   },
-  transpileDependencies: ["vuetify"]
+  transpileDependencies: ["vuetify", "vuex-module-decorators"]
 };
