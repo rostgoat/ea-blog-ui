@@ -1,6 +1,9 @@
 <template>
-  <v-app>
-    <v-card width="400" class="mx-auto mt-5">
+  <v-app class="login-container">
+    <div class="login-alert">
+      <ToastManager :toast="loginToast" />
+    </div>
+    <v-card width="400" class="mx-auto mt-5 login-card">
       <v-card-title>
         <h1 class="display-1">Login</h1>
       </v-card-title>
@@ -8,13 +11,15 @@
         <v-form>
           <v-text-field
             label="Username"
-            v-model="loginUsername"
+            v-model="loginForm.username"
+            :rules="usernameRules"
             prepend-icon="mdi-account-circle"
           ></v-text-field>
           <v-text-field
             :type="showPassword ? 'text' : 'password'"
             label="Password"
-            v-model="loginPassword"
+            v-model="loginForm.password"
+            :rules="passwordRules"
             prepend-icon="mdi-lock"
             :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
             @click:append="showPassword = !showPassword"
@@ -35,14 +40,39 @@
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 import users from "@/store/modules/users";
+import ToastManager from "@/components/ToastManager.vue";
 
-@Component
+@Component({
+  components: { ToastManager }
+})
 export default class Login extends Vue {
   name = "Login";
   showPassword = false;
 
   loginUsername = "";
   loginPassword = "";
+
+  show = false;
+
+  usernameRules = [(username: string) => !!username || "Username is required"];
+
+  passwordRules = [(password: string) => !!password || "Password is required"];
+  loginForm = {
+    name: "",
+    username: "",
+    email: "",
+    password: "",
+    passwordConfirm: ""
+  };
+
+  loginSuccess = false;
+  loginFailure = false;
+
+  loginToast = {
+    type: "sucess",
+    text: "",
+    show: false
+  };
 
   @Prop() toggleLogin!: boolean;
 
@@ -55,8 +85,34 @@ export default class Login extends Vue {
     console.log("response", response);
   }
 
+  onLoginFailure() {
+    this.loginToast = {
+      type: "error",
+      text: "Failed during login!",
+      show: true
+    };
+    this.loginFailure = true;
+  }
+
   onClickRegister() {
-    this.$router.push("register");
+    this.$router.push("login");
   }
 }
 </script>
+
+<style lang="scss">
+.login-card {
+  position: fixed !important;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.login-alert {
+  margin-top: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+</style>

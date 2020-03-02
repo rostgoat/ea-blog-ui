@@ -4,7 +4,22 @@
       <v-toolbar-title>EA Games Blog</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn v-if="username">Create Post</v-btn>
-      <v-icon @click="loginOrRegister">mdi-account-circle</v-icon>
+      <v-menu bottom class="menu">
+        <template v-slot:activator="{ on }">
+          <v-btn v-on="on">
+            <v-icon>mdi-account-circle</v-icon>
+          </v-btn>
+        </template>
+        <v-list>
+          <v-list-item
+            v-for="(item, index) in items"
+            :key="index"
+            @click="onClickMenuItem(item.title)"
+          >
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </v-app-bar>
     <v-content class="default-layout__main-content">
       <transition name="fade" mode="out-in">
@@ -23,12 +38,14 @@ import users from "@/store/modules/users";
 export default class App extends Vue {
   name = "App";
 
-  loginOrRegister() {
-    this.$router.push("login");
-  }
+  items = [{ title: "Login" }, { title: "Register" }, { title: "My Account" }];
 
   get username() {
     return users.username;
+  }
+
+  onClickMenuItem(item: string) {
+    this.$router.push(item.toLowerCase());
   }
 }
 </script>
