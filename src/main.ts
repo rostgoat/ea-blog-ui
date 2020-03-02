@@ -7,6 +7,7 @@ import Vuetify from "vuetify";
 import "vuetify/dist/vuetify.min.css";
 import VueSocketIOExt from "vue-socket.io-extended";
 import io from "socket.io-client";
+import axios from "axios";
 
 async function start() {
   Vue.use(Vuetify);
@@ -16,6 +17,8 @@ async function start() {
   const socket = io(serverUrl);
 
   Vue.use(VueSocketIOExt, socket);
+
+  axios.defaults.baseURL = serverUrl;
 
   new Vue({
     sockets: {
