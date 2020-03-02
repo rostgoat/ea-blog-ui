@@ -15,7 +15,7 @@ import Toast from "@/components/Toast.vue";
 export default class ToastManager extends Vue {
   @Prop() toast!: any;
 
-  duration = 7000;
+  duration = 4000;
 
   addToast() {
     setTimeout(() => {
@@ -33,9 +33,9 @@ export default class ToastManager extends Vue {
   }
 
   mounted() {
-    this.addToast();
-    // setInterval(() => {
-    // }, this.duration);
+    setInterval(() => {
+      this.addToast();
+    }, this.duration);
   }
 }
 </script>

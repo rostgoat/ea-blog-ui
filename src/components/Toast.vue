@@ -1,5 +1,6 @@
 <template>
   <div :class="['c-toasts__item', 'c-toasts__item--' + toast.type]">
+    <v-icon>mdi-alert</v-icon>
     <span class="c-toasts__item-text">{{ toast.text }}</span>
   </div>
 </template>
@@ -29,8 +30,9 @@ export default class Toast extends Vue {
 }
 
 .c-toasts__item-text {
-  font-size: 14px;
+  font-size: 1.1rem;
   line-height: 1.5;
+  margin-left: 1rem;
 }
 
 .c-toasts__item--success {
@@ -38,7 +40,7 @@ export default class Toast extends Vue {
 }
 
 .c-toasts__item--error {
-  background-color: #cc3300;
+  background-color: #be3030;
 }
 
 .c-toasts__item--warning {
