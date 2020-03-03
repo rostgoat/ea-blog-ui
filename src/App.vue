@@ -32,7 +32,8 @@
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
-import users from "@/store/modules/users";
+import { UsersModule } from "@/store/modules/users";
+import { Watch } from "vue-property-decorator";
 
 @Component
 export default class App extends Vue {
@@ -41,7 +42,16 @@ export default class App extends Vue {
   items = [{ title: "Login" }, { title: "Register" }, { title: "My Account" }];
 
   get username() {
-    return users.username;
+    return UsersModule.userUsername;
+  }
+
+  @Watch("items")
+  onUserLogin() {
+    this.items.filter(item => {
+      if (item.title === "Login") {
+        item.title = "Logout";
+      }
+    });
   }
 
   onClickMenuItem(item: string) {

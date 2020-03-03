@@ -39,7 +39,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
-import users from "@/store/modules/users";
+import { UsersModule } from "@/store/modules/users";
 import ToastManager from "@/components/ToastManager.vue";
 
 @Component({
@@ -75,7 +75,7 @@ export default class Login extends Vue {
       username: this.loginForm.username,
       password: this.loginForm.password
     };
-    const response = users.login(userToLogin);
+    const response = UsersModule.login(userToLogin);
     if (response) {
       this.$router.push("/");
     }

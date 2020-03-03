@@ -10,5 +10,8 @@ export interface UserSubmit {
 }
 
 export interface UserReponse {
-  user: User;
+  username: string;
+  token: string;
+  email: string;
+  name: string;
 }
