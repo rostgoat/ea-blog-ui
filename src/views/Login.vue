@@ -49,20 +49,14 @@ export default class Login extends Vue {
   name = "Login";
   showPassword = false;
 
-  loginUsername = "";
-  loginPassword = "";
-
   show = false;
 
   usernameRules = [(username: string) => !!username || "Username is required"];
 
   passwordRules = [(password: string) => !!password || "Password is required"];
   loginForm = {
-    name: "",
     username: "",
-    email: "",
-    password: "",
-    passwordConfirm: ""
+    password: ""
   };
 
   loginSuccess = false;
@@ -78,11 +72,13 @@ export default class Login extends Vue {
 
   onClickLogin() {
     const userToLogin = {
-      username: this.loginUsername,
-      password: this.loginPassword
+      username: this.loginForm.username,
+      password: this.loginForm.password
     };
     const response = users.login(userToLogin);
-    console.log("response", response);
+    if (response) {
+      this.$router.push("/");
+    }
   }
 
   onLoginFailure() {

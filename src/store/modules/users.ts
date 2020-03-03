@@ -27,9 +27,10 @@ class UsersModule extends VuexModule {
     return (this.user && this.user.username) || null;
   }
 
-  @Action({ commit: "setUser" })
+  @Action({ commit: "setUser", rawError: true })
   async login(usersSubmit: UserSubmit) {
     const user = await loginUser(usersSubmit);
+    console.log("user", user);
     return user;
   }
 }
