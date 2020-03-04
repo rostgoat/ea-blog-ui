@@ -7,9 +7,11 @@ import Vuetify from "vuetify";
 import "vuetify/dist/vuetify.min.css";
 import VueSocketIOExt from "vue-socket.io-extended";
 import io from "socket.io-client";
-import axios from "axios";
+import ElementUI from "element-ui";
+import "element-ui/lib/theme-chalk/index.css";
 
 async function start() {
+  Vue.use(ElementUI);
   Vue.use(Vuetify);
   Vue.config.productionTip = false;
 
@@ -17,8 +19,6 @@ async function start() {
   const socket = io(serverUrl);
 
   Vue.use(VueSocketIOExt, socket);
-
-  axios.defaults.baseURL = serverUrl;
 
   new Vue({
     sockets: {

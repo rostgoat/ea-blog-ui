@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Message, MessageBox } from "element-ui";
 
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_URL,
@@ -26,6 +27,11 @@ service.interceptors.response.use(
     return response.data;
   },
   error => {
+    Message({
+      message: error.message || "Error",
+      type: "error",
+      duration: 5 * 1000
+    });
     console.log(error);
     console.error(error);
     return Promise.reject(error);
