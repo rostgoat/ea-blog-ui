@@ -14,13 +14,12 @@ import { getToken, setToken } from "@/utils/cookies";
   namespaced: true,
   name: "users",
   store,
-  dynamic: true
-  // preserveState: true
+  dynamic: true,
+  preserveState: true
 })
 class Users extends VuexModule {
   public username = "";
   public name = "";
-  public email = "";
   public token = "";
 
   @Mutation
@@ -35,35 +34,40 @@ class Users extends VuexModule {
 
   @Mutation
   private SET_TOKEN(token: string) {
-    console.log("token", token);
     this.token = token;
   }
 
   @Action({ rawError: true })
   async login(usersSubmit: UserSubmit) {
-    try {
-      const response: any = await loginUser(usersSubmit);
-      if (typeof response !== "undefined") {
-        const { accessToken, username, name } = response;
+    const response: any = await loginUser(usersSubmit);
+    if (typeof response !== "undefined") {
+      const { accessToken, username, name } = response;
 
-        setToken(accessToken);
-        this.SET_TOKEN(accessToken);
-        this.SET_USERNAME(username);
-        this.SET_NAME(name);
-      }
-    } catch (e) {
-      console.log("e: ", e);
+      setToken(accessToken);
+      this.SET_TOKEN(accessToken);
+      this.SET_USERNAME(username);
+      this.SET_NAME(name);
     }
   }
 
-  @Action
+  @Action({ rawError: true })
   async logout() {
     await logoutUser();
     this.SET_TOKEN("");
+    this.SET_USERNAME("");
+    this.SET_NAME("");
   }
 
   get userUsername() {
     return this.username || null;
+  }
+
+  get loggedInUser() {
+    return {
+      username: this.username,
+      token: this.token,
+      name: this.name
+    };
   }
 }
 

@@ -76,10 +76,9 @@ export default class Login extends Vue {
       password: this.loginForm.password
     };
     const response = UsersModule.login(userToLogin);
-    console.log("response login", response);
-    // if (response) {
-    //   this.$router.push("/");
-    // }
+    if (response) {
+      this.$router.push("/");
+    }
   }
 
   onLoginFailure() {

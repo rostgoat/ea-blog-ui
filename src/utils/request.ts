@@ -32,8 +32,6 @@ service.interceptors.response.use(
       type: "error",
       duration: 5 * 1000
     });
-    console.log(error);
-    console.error(error);
     return Promise.reject(error);
   }
 );
