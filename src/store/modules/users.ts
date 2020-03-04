@@ -9,18 +9,19 @@ import store from "@/store";
 import { User, UserSubmit } from "../models";
 import { loginUser, logoutUser } from "@/api/users";
 import { getToken, setToken } from "@/utils/cookies";
+
 @Module({
   namespaced: true,
-  name: "user",
+  name: "users",
   store,
-  dynamic: true,
-  preserveState: true
+  dynamic: true
+  // preserveState: true
 })
 class Users extends VuexModule {
   public username = "";
   public name = "";
   public email = "";
-  public token = getToken() || "";
+  public token = "";
 
   @Mutation
   private SET_USERNAME(username: string) {
@@ -33,26 +34,26 @@ class Users extends VuexModule {
   }
 
   @Mutation
-  private SET_EMAIL(email: string) {
-    this.email = email;
-  }
-
-  @Mutation
   private SET_TOKEN(token: string) {
+    console.log("token", token);
     this.token = token;
   }
 
-  @Action
+  @Action({ rawError: true })
   async login(usersSubmit: UserSubmit) {
-    const response: any = await loginUser(usersSubmit);
-    console.log("response", response);
-    const { token, username, email, name } = response;
+    try {
+      const response: any = await loginUser(usersSubmit);
+      if (typeof response !== "undefined") {
+        const { accessToken, username, name } = response;
 
-    setToken(token);
-    this.SET_TOKEN(token);
-    this.SET_USERNAME(username);
-    this.SET_NAME(name);
-    this.SET_EMAIL(email);
+        setToken(accessToken);
+        this.SET_TOKEN(accessToken);
+        this.SET_USERNAME(username);
+        this.SET_NAME(name);
+      }
+    } catch (e) {
+      console.log("e: ", e);
+    }
   }
 
   @Action

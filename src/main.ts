@@ -13,7 +13,7 @@ async function start() {
   Vue.use(Vuetify);
   Vue.config.productionTip = false;
 
-  const serverUrl = process.env.VUE_APP_SERVER_URL;
+  const serverUrl = process.env.VUE_APP_BASE_URL;
   const socket = io(serverUrl);
 
   Vue.use(VueSocketIOExt, socket);

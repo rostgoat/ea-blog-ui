@@ -28,7 +28,7 @@
       </v-card-text>
       <v-divider></v-divider>
       <v-card-actions>
-        <v-btn color="success" @click="onClickRegister">Register</v-btn>
+        <!-- <v-btn color="success" @click="onClickRegister">Register</v-btn> -->
         <v-spacer></v-spacer>
         <v-btn color="info" @click="onClickLogin">Login</v-btn>
       </v-card-actions>
@@ -76,9 +76,10 @@ export default class Login extends Vue {
       password: this.loginForm.password
     };
     const response = UsersModule.login(userToLogin);
-    if (response) {
-      this.$router.push("/");
-    }
+    console.log("response login", response);
+    // if (response) {
+    //   this.$router.push("/");
+    // }
   }
 
   onLoginFailure() {
