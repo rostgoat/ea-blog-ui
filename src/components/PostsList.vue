@@ -43,7 +43,7 @@ export default class PostsList extends Vue {
   ];
 
   async mounted() {
-    await this.getPosts();
+    // await this.getPosts();
   }
 
   async getPosts() {

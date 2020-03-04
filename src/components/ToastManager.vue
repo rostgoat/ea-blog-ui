@@ -49,7 +49,7 @@ export default class ToastManager extends Vue {
 }
 
 .toasts-leave-active {
-  // transition: opacity 0.2s ease-in-out, ;
+  // transition: opacity 0.2s ease-in-out,
   animation: bounce-in-reverse 1.3s forwards;
 }
 
