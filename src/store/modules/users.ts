@@ -6,9 +6,9 @@ import {
   Action
 } from "vuex-module-decorators";
 import store from "@/store";
-import { User, UserSubmit } from "../models";
-import { loginUser, logoutUser } from "@/api/users";
-import { getToken, setToken } from "@/utils/cookies";
+import { UserSubmit } from "../models";
+import { loginUser } from "@/api/users";
+import { setToken } from "@/utils/cookies";
 
 @Module({
   namespaced: true,
@@ -52,7 +52,6 @@ class Users extends VuexModule {
 
   @Action({ rawError: true })
   async logout() {
-    await logoutUser();
     this.SET_TOKEN("");
     this.SET_USERNAME("");
     this.SET_NAME("");

@@ -32,15 +32,28 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 import { UsersModule } from "@/store/modules/users";
+import { Watch } from "vue-property-decorator";
+import { Route, RawLocation } from "vue-router";
 
 @Component
 export default class App extends Vue {
   name = "App";
-
-  items = [{ title: "Login" }, { title: "Register" }, { title: "My Account" }];
+  loading = false;
+  items = [{ title: "Login" }];
+  user = {};
 
   get loggedInUser() {
     return UsersModule.loggedInUser;
+  }
+
+  mounted() {
+    this.updateMenuLinks();
+  }
+
+  async beforeRouteEnter(to: Route, from: Route, next: any) {
+    console.log("beforeRouteEnter");
+    this.user = UsersModule.loggedInUser;
+    next();
   }
 
   onClickMenuItem(item: string) {
@@ -48,25 +61,23 @@ export default class App extends Vue {
       this.$router.push(item.toLowerCase());
     } else {
       this.logout();
+      this.updateMenuLinks();
     }
   }
 
-  logout() {
-    return UsersModule.logout();
-  }
-
-  mounted() {
-    this.updateMenuLinks();
-  }
-
   updateMenuLinks() {
-    if (this.loggedInUser) {
+    console.log("this.loggedInUser", this.loggedInUser);
+    if (this.loggedInUser.username) {
       this.items.forEach(value => {
         if (value.title === "Login") {
           value.title = "Logout";
         }
       });
+      this.items.unshift({ title: "My Account" });
     }
+  }
+  logout() {
+    return UsersModule.logout();
   }
 }
 </script>

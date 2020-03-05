@@ -80,7 +80,6 @@ export default class Login extends Vue {
       this.$router.push("/");
     }
   }
-
   onLoginFailure() {
     this.loginToast = {
       type: "error",

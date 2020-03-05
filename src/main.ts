@@ -1,6 +1,6 @@
 import Vue from "vue";
 import App from "./App.vue";
-import router from "./router";
+import CustomRouter from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
 import Vuetify from "vuetify";
@@ -11,14 +11,16 @@ import ElementUI from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 
 async function start() {
-  Vue.use(ElementUI);
-  Vue.use(Vuetify);
-  Vue.config.productionTip = false;
-
+  const router = new CustomRouter().initialize();
   const serverUrl = process.env.VUE_APP_BASE_URL;
   const socket = io(serverUrl);
 
+  Vue.config.productionTip = false;
+
   Vue.use(VueSocketIOExt, socket);
+  Vue.use(ElementUI);
+  Vue.use(Vuetify);
+  Vue.use(CustomRouter);
 
   new Vue({
     sockets: {
