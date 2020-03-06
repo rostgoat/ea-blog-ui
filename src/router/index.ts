@@ -1,42 +1,85 @@
-import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
-import Login from "../views/Login.vue";
-import Register from "../views/Register.vue";
-import ListPosts from "../views/ListPosts.vue";
 
-Vue.use(VueRouter);
+import routes from "./routes/index";
+import { UsersModule } from "@/store/modules/users";
 
-const routes = [
-  {
-    path: "/",
-    name: "Home",
-    component: Home
-  },
-  {
-    path: "/create",
-    name: "CreatePost",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/CreatePost.vue")
-  },
-  {
-    path: "/login",
-    name: "login",
-    component: Login
-  },
-  {
-    path: "/register",
-    name: "register",
-    component: Register
+export default class CustomRouter extends VueRouter {
+  constructor() {
+    super({
+      mode: "history",
+      routes
+    });
   }
-];
 
-const router = new VueRouter({
-  mode: "history",
-  routes
-});
+  /**
+   * Returns true if user is authenticated.
+   * @returns {Boolean}
+   */
+  isAuthenticated() {
+    return !!UsersModule.loggedInUser.token;
+  }
 
-export default router;
+  /**
+   * Initialize the router.
+   * @returns {Object} this
+   */
+  initialize() {
+    this.initBeforeEach();
+    // this.initAfterEach();
+    return this;
+  }
+
+  /**
+   * Iniitializes rules run before a route is loaded.
+   * Good for authentication and authorization enforcement.
+   */
+  initBeforeEach() {
+    this.beforeEach((to, from, next) => {
+      if (to.matched.some(record => record.meta.requiresAuth)) {
+        // eslint-disable-next-line no-extra-boolean-cast
+        if (!!UsersModule.loggedInUser.token) {
+          next();
+        } else {
+          next({
+            path: "/login",
+            params: { nextUrl: to.fullPath }
+          });
+        }
+      }
+
+      return next();
+    });
+  }
+
+  /**
+   * Override to hide duplicate-navigation errors on production.
+   * @override
+   * @param {Object} location
+   */
+  push(location: string) {
+    try {
+      return super.push(location);
+    } catch (e) {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn(e);
+      }
+      throw e;
+    }
+  }
+
+  /**
+   * Override to hide duplicate-navigation errors on production.
+   * @override
+   * @param {Object} location
+   */
+  replace(location: string) {
+    try {
+      return super.replace(location);
+    } catch (e) {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn(e);
+      }
+      throw e;
+    }
+  }
+}

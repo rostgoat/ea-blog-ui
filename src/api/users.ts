@@ -8,10 +8,3 @@ export const loginUser = (data: UserSubmit) => {
     data
   });
 };
-
-export const logoutUser = () => {
-  return request({
-    url: "/auth/logout",
-    method: "post"
-  });
-};
