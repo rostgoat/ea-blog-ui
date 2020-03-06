@@ -10,6 +10,7 @@
       <v-card-text>
         <v-form>
           <v-text-field
+            ref="usernameInput"
             label="Username"
             v-model="loginForm.username"
             :rules="usernameRules"
@@ -23,6 +24,7 @@
             prepend-icon="mdi-lock"
             :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
             @click:append="showPassword = !showPassword"
+            @keyup.native.enter="onClickLogin"
           ></v-text-field>
         </v-form>
       </v-card-text>
@@ -70,14 +72,33 @@ export default class Login extends Vue {
 
   @Prop() toggleLogin!: boolean;
 
-  onClickLogin() {
+  /**
+   * Get user from state
+   */
+  get loggedInUser() {
+    return UsersModule.loggedInUser;
+  }
+
+  mounted() {
+    // TODO: need to convert to element ui since vuetify doesnt support this yet..
+    // if (this.loginForm.username === "") {
+    //   this.$nextTick(() => {
+    //     (this.$refs.loginForm.username as HTMLInputElement).focus();
+    //   });
+    // }
+  }
+
+  async onClickLogin() {
     const userToLogin = {
       username: this.loginForm.username,
       password: this.loginForm.password
     };
-    const response = UsersModule.login(userToLogin);
-    if (response) {
+
+    try {
+      await UsersModule.login(userToLogin);
       this.$router.push("/");
+    } catch (error) {
+      throw new Error(error);
     }
   }
   onLoginFailure() {

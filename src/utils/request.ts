@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Message, MessageBox } from "element-ui";
-
+import logger from "@/plugins/logger";
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_URL,
   timeout: 5000
@@ -27,12 +27,15 @@ service.interceptors.response.use(
     return response.data;
   },
   error => {
+    console.log("error", { ...error });
+    const { response } = error;
+    logger.error(response.data.message, response);
     Message({
-      message: error.message || "Error",
+      message: `Error: ${response.data.message}`,
       type: "error",
       duration: 5 * 1000
     });
-    return Promise.reject(error);
+    return Promise.reject({ ...error });
   }
 );
 
