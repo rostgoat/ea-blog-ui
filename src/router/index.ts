@@ -12,6 +12,14 @@ export default class CustomRouter extends VueRouter {
   }
 
   /**
+   * Returns true if user is authenticated.
+   * @returns {Boolean}
+   */
+  isAuthenticated() {
+    return !!UsersModule.loggedInUser.token;
+  }
+
+  /**
    * Initialize the router.
    * @returns {Object} this
    */
@@ -26,9 +34,12 @@ export default class CustomRouter extends VueRouter {
    * Good for authentication and authorization enforcement.
    */
   initBeforeEach() {
-    this.beforeEach(async (to, from, next) => {
+    this.beforeEach((to, from, next) => {
       if (to.matched.some(record => record.meta.requiresAuth)) {
-        if (UsersModule.loggedInUser.token === "") {
+        // eslint-disable-next-line no-extra-boolean-cast
+        if (!!UsersModule.loggedInUser.token) {
+          next();
+        } else {
           next({
             path: "/login",
             params: { nextUrl: to.fullPath }

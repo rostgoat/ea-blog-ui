@@ -2,6 +2,8 @@ import Home from "../../views/Home.vue";
 import Login from "../../views/Login.vue";
 import Register from "../../views/Register.vue";
 import CreatePost from "../../views/CreatePost.vue";
+import ManagePosts from "../../views/ManagePosts.vue";
+import Settings from "../../views/Settings.vue";
 
 export default [
   {
@@ -21,8 +23,24 @@ export default [
   },
   {
     path: "/create",
-    name: "CreatePost",
+    name: "create-post",
     component: CreatePost,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: "/manage-posts",
+    name: "manage-posts",
+    component: ManagePosts,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: "/settings",
+    name: "settings",
+    component: Settings,
     meta: {
       requiresAuth: true
     }
