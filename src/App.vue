@@ -19,7 +19,6 @@
       <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-xs-only">
         <v-btn
-          flat
           v-for="item in items"
           :key="item.title"
           @click="onClickMenuItem(item.title)"
@@ -29,9 +28,6 @@
         </v-btn>
       </v-toolbar-items>
 
-      <v-btn @click="onClickCreatePost" v-if="loggedInUser.token"
-        >Create Post</v-btn
-      >
       <v-spacer></v-spacer>
       <span class="nav-user" v-if="loggedInUser.token">{{
         loggedInUser.username
@@ -68,7 +64,6 @@ import Component from "vue-class-component";
 import { UsersModule } from "@/store/modules/users";
 import { Watch } from "vue-property-decorator";
 import { Route } from "vue-router";
-import { User } from "@/store/models";
 
 @Component
 export default class App extends Vue {
@@ -81,6 +76,7 @@ export default class App extends Vue {
     { icon: "mdi-lock-open", title: "Login" },
     { icon: "mdi-lock", title: "Logout" }
   ];
+
   user = {};
   sideNav = false;
 
@@ -92,12 +88,13 @@ export default class App extends Vue {
   }
 
   mounted() {
-    console.log("mounted - this.loggedInUser", this.loggedInUser);
     this.updateMenuLinks();
   }
 
   /**
    * Navigation guard that keeps track of data before this route is entered
+   *
+   * Todo.. figure out wtf is wrong with this
    */
   beforeRouteEnter(to: Route, from: Route, next: any) {
     next((vm: any) => {
@@ -108,27 +105,30 @@ export default class App extends Vue {
   }
 
   /**
-   * Watcher for the user state changes
+   * Watcher for the user state changes and update nav links
    */
   @Watch("loggedInUser")
-  onLoggedInUserChange(newValue: User, oldValue: User) {
-    console.log("newValue", newValue);
-    console.log("oldValue", oldValue);
-
-    // user is logged in and username is set in state
-    if (newValue.username) {
-      this.updateMenuLinks(true);
-    }
+  onLoggedInUserChange() {
+    this.updateMenuLinks();
   }
 
-  updateMenuLinks(loggedIn = false) {
+  /**
+   * Update nav bar links depending on user state
+   */
+  updateMenuLinks() {
+    const loggedIn = UsersModule.loggedInUser.token;
+
     if (loggedIn) {
-      this.items.forEach(value => {
-        if (value.title === "Login") {
-          value.title = "Logout";
-        }
-      });
-      // this.items.unshift({ title: "My Account" });
+      this.items = [];
+      this.items.unshift(
+        { icon: "mdi-lead-pencil", title: "Create Post" },
+        { icon: "mdi-book-open", title: "Manage Posts" },
+        { icon: "mdi-cogs", title: "Settings" },
+        { icon: "mdi-lock", title: "Logout" }
+      );
+    } else {
+      this.items = [];
+      this.items.push({ icon: "mdi-lock-open", title: "Login" });
     }
   }
 
@@ -143,16 +143,16 @@ export default class App extends Vue {
         this.onClickLogin();
         break;
       case "logout":
-        this.onClickLogin();
+        this.onClickLogout();
         break;
       case "create-post":
-        this.onClickLogin();
+        this.onClickCreatePost();
         break;
       case "manage-posts":
-        this.onClickLogin();
+        this.onClickManagePosts();
         break;
       case "settings":
-        this.onClickLogin();
+        this.onClickSettings();
         break;
     }
   }
@@ -169,7 +169,9 @@ export default class App extends Vue {
    */
   onClickLogout() {
     UsersModule.logout();
-    this.$router.push("/");
+    if (this.$route.name !== "Home") {
+      this.$router.push("/");
+    }
   }
 
   /**
