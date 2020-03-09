@@ -29,11 +29,6 @@
           {{ item.title }}
         </v-btn>
       </v-toolbar-items>
-
-      <v-spacer></v-spacer>
-      <span class="nav-user" v-if="loggedInUser.token">{{
-        loggedInUser.username
-      }}</span>
     </v-app-bar>
 
     <v-navigation-drawer app clipped temporary absolute v-model="sideNav">
