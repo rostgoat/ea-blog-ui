@@ -1,7 +1,9 @@
 <template>
   <div>
-    <v-card class="mx-auto">
-      <v-card-title>Create Post</v-card-title>
+    <v-card class="mx-auto create-post-card" width="800">
+      <v-card-title class="create-post-card__title">
+        <h1>Create Post</h1>
+      </v-card-title>
       <v-card-text>
         <v-form>
           <v-text-field
@@ -36,6 +38,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
+import { UsersModule } from "@/store/modules/users";
 import axios from "axios";
 
 @Component
@@ -44,14 +47,27 @@ export default class CreatePost extends Vue {
   postSubTitle = null;
   postContent = null;
 
+  /**
+   * Get user from state
+   */
+  get loggedInUser() {
+    return UsersModule.loggedInUser;
+  }
+
   async onClickCreatePost() {
+    console.log("loggedInUser", this.loggedInUser);
     const newPost = {
       title: this.postTitle,
       subTitle: this.postSubTitle,
       content: this.postContent,
-      // eslint-disable-next-line @typescript-eslint/camelcase
-      user_id: "f7fb0db2-65a1-4ce5-b00b-f67a518e78e0"
+      username: this.loggedInUser.username
     };
+
+    // try {
+    //   await UsersModule.createPost(newPost);
+    // } catch (error) {
+    //   throw new Error(error);
+    // }
 
     const createPost = await axios.post(
       `${process.env.VUE_APP_SERVER_URL}/posts/create`,
@@ -69,4 +85,12 @@ export default class CreatePost extends Vue {
 }
 </script>
 
-<style></style>
+<style lang="scss">
+.create-post-card {
+  @include center-card;
+
+  &__title {
+    @include center-card__title;
+  }
+}
+</style>

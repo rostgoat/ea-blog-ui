@@ -4,7 +4,7 @@
       <ToastManager :toast="loginToast" />
     </div>
     <v-card width="400" class="mx-auto login-card">
-      <v-card-title class="register-card__title">
+      <v-card-title class="login-card__title">
         <h1>Login</h1>
       </v-card-title>
       <v-card-text>
