@@ -3,8 +3,11 @@ module.exports = {
     loaderOptions: {
       scss: {
         prependData: `
-          @import "~@/assets/styles/_variables.scss";
-          @import "~@/assets/styles/_transitions.scss";
+          @import "~@/styles/_variables.scss";
+          @import "~@/styles/_transitions.scss";
+          @import "~@/styles/_mixins.scss";
+          @import "~@/styles/_setup.scss";
+          @import "~@/styles/_normalize.scss";
         `
       }
     }

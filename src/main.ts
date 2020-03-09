@@ -3,6 +3,7 @@ import App from "./App.vue";
 import CustomRouter from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
+import logger from "./plugins/logger";
 import Vuetify from "vuetify";
 import "vuetify/dist/vuetify.min.css";
 import VueSocketIOExt from "vue-socket.io-extended";
@@ -21,6 +22,7 @@ async function start() {
   Vue.use(ElementUI);
   Vue.use(Vuetify);
   Vue.use(CustomRouter);
+  Vue.use(logger);
 
   new Vue({
     sockets: {

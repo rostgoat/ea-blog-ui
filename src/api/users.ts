@@ -1,5 +1,5 @@
 import request from "@/utils/request";
-import { UserSubmit, UserReponse } from "@/store/models";
+import { UserSubmit } from "@/store/models";
 
 export const loginUser = (data: UserSubmit) => {
   return request({

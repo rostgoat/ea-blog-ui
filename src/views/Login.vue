@@ -1,15 +1,13 @@
 <template>
   <v-app class="login-container">
-    <div class="login-alert">
-      <ToastManager :toast="loginToast" />
-    </div>
-    <v-card width="400" class="mx-auto mt-5 login-card">
-      <v-card-title>
-        <h1 class="display-1">Login</h1>
+    <v-card width="400" class="mx-auto login-card">
+      <v-card-title class="login-card__title">
+        <h1>Login</h1>
       </v-card-title>
       <v-card-text>
         <v-form>
           <v-text-field
+            class="login-card__username-input"
             label="Username"
             v-model="loginForm.username"
             :rules="usernameRules"
@@ -23,12 +21,17 @@
             prepend-icon="mdi-lock"
             :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
             @click:append="showPassword = !showPassword"
+            @keyup.native.enter="onClickLogin"
           ></v-text-field>
         </v-form>
       </v-card-text>
       <v-divider></v-divider>
       <v-card-actions>
-        <!-- <v-btn color="success" @click="onClickRegister">Register</v-btn> -->
+        <router-link to="/register"
+          ><a class="register-link"
+            >Don't have an account yet? Sign up here.</a
+          ></router-link
+        >
         <v-spacer></v-spacer>
         <v-btn color="info" @click="onClickLogin">Login</v-btn>
       </v-card-actions>
@@ -41,6 +44,7 @@ import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 import { UsersModule } from "@/store/modules/users";
 import ToastManager from "@/components/ToastManager.vue";
+import JQuery from "jquery";
 
 @Component({
   components: { ToastManager }
@@ -48,59 +52,56 @@ import ToastManager from "@/components/ToastManager.vue";
 export default class Login extends Vue {
   name = "Login";
   showPassword = false;
-
-  show = false;
-
   usernameRules = [(username: string) => !!username || "Username is required"];
-
   passwordRules = [(password: string) => !!password || "Password is required"];
   loginForm = {
     username: "",
     password: ""
   };
 
-  loginSuccess = false;
-  loginFailure = false;
-
-  loginToast = {
-    type: "sucess",
-    text: "",
-    show: false
-  };
-
   @Prop() toggleLogin!: boolean;
 
-  onClickLogin() {
+  /**
+   * Get user from state
+   */
+  get loggedInUser() {
+    return UsersModule.loggedInUser;
+  }
+
+  /**
+   * Focus on username input on mount
+   */
+  mounted() {
+    // hacking with Jquery because Vuetify doesn't have input autofocus
+    JQuery("input:text:visible:first").focus();
+  }
+
+  /**
+   * Sign user in
+   */
+  async onClickLogin() {
     const userToLogin = {
       username: this.loginForm.username,
       password: this.loginForm.password
     };
-    const response = UsersModule.login(userToLogin);
-    if (response) {
-      this.$router.push("/");
-    }
-  }
-  onLoginFailure() {
-    this.loginToast = {
-      type: "error",
-      text: "Failed during login!",
-      show: true
-    };
-    this.loginFailure = true;
-  }
 
-  onClickRegister() {
-    this.$router.push("login");
+    try {
+      await UsersModule.login(userToLogin);
+      this.$router.push("/");
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 }
 </script>
 
 <style lang="scss">
 .login-card {
-  position: fixed !important;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  @include center-card;
+
+  &__title {
+    @include center-card__title;
+  }
 }
 
 .login-alert {
@@ -109,5 +110,9 @@ export default class Login extends Vue {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+}
+
+.register-link {
+  font-size: 0.8rem;
 }
 </style>
