@@ -1,10 +1,12 @@
 <template>
   <v-app>
-    <v-toolbar
+    <v-app-bar
+      app
       dark
+      fixed
       class="default-layout__navbar"
       extended
-      extension-height="5"
+      extension-height="3"
     >
       <v-app-bar-nav-icon
         @click.native.stop="sideNav = !sideNav"
@@ -32,9 +34,9 @@
       <span class="nav-user" v-if="loggedInUser.token">{{
         loggedInUser.username
       }}</span>
-    </v-toolbar>
+    </v-app-bar>
 
-    <v-navigation-drawer clipped v-model="sideNav">
+    <v-navigation-drawer app clipped temporary absolute v-model="sideNav">
       <v-list>
         <v-list-item
           v-for="item in items"
@@ -50,6 +52,7 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
+
     <v-content class="default-layout__main-content">
       <transition name="fade" mode="out-in">
         <router-view />
@@ -197,7 +200,6 @@ export default class App extends Vue {
 }
 </script>
 <style lang="scss">
-@import "assets/styles/index.scss";
 .default-layout {
   &__main-content {
     transition: map-get($transitions, fade);

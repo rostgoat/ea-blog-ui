@@ -3,7 +3,7 @@
     <div class="login-alert">
       <ToastManager :toast="loginToast" />
     </div>
-    <v-card width="400" class="mx-auto mt-5 login-card">
+    <v-card width="400" class="mx-auto login-card">
       <v-card-title>
         <h1 class="display-1">Login</h1>
       </v-card-title>
@@ -117,11 +117,10 @@ export default class Login extends Vue {
 </script>
 
 <style lang="scss">
+@import "../styles/components";
+
 .login-card {
-  position: fixed !important;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  @include center-card;
 }
 
 .login-alert {
