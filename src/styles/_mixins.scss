@@ -1,0 +1,12 @@
+@mixin center-card {
+    position: fixed !important;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@mixin center-card__title {
+  display: flex !important;
+  align-self: center !important;
+  justify-content: center !important;
+}

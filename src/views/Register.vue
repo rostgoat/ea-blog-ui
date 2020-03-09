@@ -4,9 +4,10 @@
       <ToastManager :toast="registrationToast" />
     </div>
     <v-card width="400" class="mx-auto mt-5 register-card">
-      <v-card-title>
-        <h1 class="display-1">Register</h1>
+      <v-card-title class="register-card__title">
+        <h1>Create Your Account</h1>
       </v-card-title>
+
       <v-card-text>
         <v-form>
           <v-text-field
@@ -48,9 +49,13 @@
       </v-card-text>
       <v-divider></v-divider>
       <v-card-actions>
-        <v-btn color="success" @click="onClickRegister">Register</v-btn>
+        <router-link to="/login"
+          ><a class="register-link"
+            >Already a member? Sign in here.</a
+          ></router-link
+        >
         <v-spacer></v-spacer>
-        <v-btn color="info" @click="onClickLogin">Login</v-btn>
+        <v-btn color="success" @click="onClickRegister">Register</v-btn>
       </v-card-actions>
     </v-card>
   </v-app>
@@ -169,10 +174,11 @@ export default class Register extends Vue {
 </script>
 <style lang="scss">
 .register-card {
-  position: fixed !important;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  @include center-card;
+
+  &__title {
+    @include center-card__title;
+  }
 }
 
 .registration-alert {

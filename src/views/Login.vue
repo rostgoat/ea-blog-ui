@@ -4,8 +4,8 @@
       <ToastManager :toast="loginToast" />
     </div>
     <v-card width="400" class="mx-auto login-card">
-      <v-card-title>
-        <h1 class="display-1">Login</h1>
+      <v-card-title class="register-card__title">
+        <h1>Login</h1>
       </v-card-title>
       <v-card-text>
         <v-form>
@@ -30,7 +30,11 @@
       </v-card-text>
       <v-divider></v-divider>
       <v-card-actions>
-        <!-- <v-btn color="success" @click="onClickRegister">Register</v-btn> -->
+        <router-link to="/register"
+          ><a class="register-link"
+            >Don't have an account yet? Sign up here.</a
+          ></router-link
+        >
         <v-spacer></v-spacer>
         <v-btn color="info" @click="onClickLogin">Login</v-btn>
       </v-card-actions>
@@ -117,10 +121,12 @@ export default class Login extends Vue {
 </script>
 
 <style lang="scss">
-@import "../styles/components";
-
 .login-card {
   @include center-card;
+
+  &__title {
+    @include center-card__title;
+  }
 }
 
 .login-alert {
@@ -129,5 +135,9 @@ export default class Login extends Vue {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+}
+
+.register-link {
+  font-size: 0.8rem;
 }
 </style>
