@@ -6,7 +6,7 @@ import {
   Action
 } from "vuex-module-decorators";
 import store from "@/store";
-import { UserSubmit } from "../models";
+import { UserSubmit } from "../models/users.models";
 import { loginUser } from "@/api/users";
 import { setToken } from "@/utils/cookies";
 
