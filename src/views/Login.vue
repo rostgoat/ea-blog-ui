@@ -86,7 +86,7 @@ export default class Login extends Vue {
     };
 
     try {
-      await UsersModule.login(userToLogin);
+      await UsersModule.loginUser(userToLogin);
       this.$router.push("/");
     } catch (error) {
       throw new Error(error);

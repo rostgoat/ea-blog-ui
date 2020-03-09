@@ -6,8 +6,8 @@ import {
   Action
 } from "vuex-module-decorators";
 import store from "@/store";
-import { UserSubmit } from "../models/users.models";
-import { loginUser } from "@/api/users";
+import { UserSubmitLogin, UserSubmitRegister } from "../models/users.models";
+import { login, register } from "@/api/users";
 import { setToken } from "@/utils/cookies";
 
 @Module({
@@ -21,6 +21,7 @@ class Users extends VuexModule {
   public username = "";
   public name = "";
   public token = "";
+  public uid = "";
 
   @Mutation
   private SET_USERNAME(username: string) {
@@ -37,13 +38,24 @@ class Users extends VuexModule {
     this.token = token;
   }
 
+  @Mutation
+  private SET_UID(uid: string) {
+    this.uid = uid;
+  }
+
   @Action({ rawError: true })
-  async login(usersSubmit: UserSubmit) {
-    const response: any = await loginUser(usersSubmit);
+  async registerUser(params: UserSubmitRegister) {
+    await register(params);
+  }
+
+  @Action({ rawError: true })
+  async loginUser(params: UserSubmitLogin) {
+    const response: any = await login(params);
     if (typeof response !== "undefined") {
-      const { accessToken, username, name } = response;
+      const { accessToken, username, name, uid } = response;
 
       setToken(accessToken);
+      this.SET_UID(uid);
       this.SET_TOKEN(accessToken);
       this.SET_USERNAME(username);
       this.SET_NAME(name);
@@ -52,6 +64,7 @@ class Users extends VuexModule {
 
   @Action({ rawError: true })
   async logout() {
+    this.SET_UID("");
     this.SET_TOKEN("");
     this.SET_USERNAME("");
     this.SET_NAME("");

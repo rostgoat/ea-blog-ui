@@ -44,6 +44,7 @@
             prepend-icon="mdi-lock"
             :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
             @click:append="showPassword = !showPassword"
+            @keyup.native.enter="onClickRegister"
           ></v-text-field>
         </v-form>
       </v-card-text>
@@ -66,6 +67,7 @@ import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 import { emailRegex, passwordRegex, usernameRegex } from "@/utils/validators";
 import axios from "axios";
+import { UsersModule } from "@/store/modules/users";
 
 import ToastManager from "@/components/ToastManager.vue";
 @Component({
@@ -136,15 +138,9 @@ export default class Register extends Vue {
     };
 
     try {
-      const registerNewUser = await axios.post(
-        "/auth/register",
-        userToRegister
-      );
-      if (registerNewUser) {
-        this.onRegistrationSuccess();
-      }
+      await UsersModule.registerUser(userToRegister);
+      this.$router.push("/login");
     } catch (error) {
-      this.onRegistrationFailure();
       throw new Error(error);
     }
   }

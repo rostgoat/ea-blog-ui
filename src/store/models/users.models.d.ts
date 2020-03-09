@@ -4,9 +4,17 @@ export interface User {
   token: string;
 }
 
-export interface UserSubmit {
+export interface UserSubmitLogin {
   username: string;
   password: string;
+}
+
+export interface UserSubmitRegister {
+  name: string;
+  username: string;
+  email: string;
+  password: string;
+  passwordConfirm: string;
 }
 
 export interface UserReponse {
