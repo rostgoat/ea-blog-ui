@@ -1,8 +1,5 @@
 <template>
   <v-app class="login-container">
-    <div class="login-alert">
-      <ToastManager :toast="loginToast" />
-    </div>
     <v-card width="400" class="mx-auto login-card">
       <v-card-title class="login-card__title">
         <h1>Login</h1>
@@ -10,7 +7,7 @@
       <v-card-text>
         <v-form>
           <v-text-field
-            ref="usernameInput"
+            class="login-card__username-input"
             label="Username"
             v-model="loginForm.username"
             :rules="usernameRules"
@@ -47,6 +44,7 @@ import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 import { UsersModule } from "@/store/modules/users";
 import ToastManager from "@/components/ToastManager.vue";
+import JQuery from "jquery";
 
 @Component({
   components: { ToastManager }
@@ -54,24 +52,11 @@ import ToastManager from "@/components/ToastManager.vue";
 export default class Login extends Vue {
   name = "Login";
   showPassword = false;
-
-  show = false;
-
   usernameRules = [(username: string) => !!username || "Username is required"];
-
   passwordRules = [(password: string) => !!password || "Password is required"];
   loginForm = {
     username: "",
     password: ""
-  };
-
-  loginSuccess = false;
-  loginFailure = false;
-
-  loginToast = {
-    type: "sucess",
-    text: "",
-    show: false
   };
 
   @Prop() toggleLogin!: boolean;
@@ -83,15 +68,17 @@ export default class Login extends Vue {
     return UsersModule.loggedInUser;
   }
 
+  /**
+   * Focus on username input on mount
+   */
   mounted() {
-    // TODO: need to convert to element ui since vuetify doesnt support this yet..
-    // if (this.loginForm.username === "") {
-    //   this.$nextTick(() => {
-    //     (this.$refs.loginForm.username as HTMLInputElement).focus();
-    //   });
-    // }
+    // hacking with Jquery because Vuetify doesn't have input autofocus
+    JQuery("input:text:visible:first").focus();
   }
 
+  /**
+   * Sign user in
+   */
   async onClickLogin() {
     const userToLogin = {
       username: this.loginForm.username,
@@ -104,18 +91,6 @@ export default class Login extends Vue {
     } catch (error) {
       throw new Error(error);
     }
-  }
-  onLoginFailure() {
-    this.loginToast = {
-      type: "error",
-      text: "Failed during login!",
-      show: true
-    };
-    this.loginFailure = true;
-  }
-
-  onClickRegister() {
-    this.$router.push("login");
   }
 }
 </script>

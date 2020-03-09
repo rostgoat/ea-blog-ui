@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Message, MessageBox } from "element-ui";
+import { Message } from "element-ui";
 import logger from "@/plugins/logger";
 import { UsersModule } from "@/store/modules/users";
 

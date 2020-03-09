@@ -67,6 +67,25 @@ const REQ_PARAMS_STYLE_STRING = `
   border-radius: 0 50px 50px 0;
 `;
 
+/**
+ * Types augmentation in order to globally use this plugin as
+ * this.$log.methodName()
+ */
+declare module "vue/types/vue" {
+  interface Vue {
+    $log: {
+      error: (message: string, response: any) => void;
+      info: (text: string) => void;
+      warn: (text: string) => void;
+      event: (text: string) => void;
+      request: (params: any) => void;
+    };
+  }
+}
+
+/**
+ * Custom log class for displaying requests and responses from the api
+ */
 class NestLogger {
   private prefix = "";
   private debug = false;
@@ -80,6 +99,11 @@ class NestLogger {
     Vue.prototype.$log = this;
   }
 
+  /**
+   * Console error message with details like status, status code and errors
+   * @param text Error message
+   * @param response Express response object
+   */
   error(text: string, response: any) {
     const { status, statusText, config } = response;
     const paramsResponse = JSON.stringify(response, null, 1);
@@ -99,6 +123,10 @@ class NestLogger {
     return text;
   }
 
+  /**
+   * Console info log with info messages
+   * @param text Message for user
+   */
   info(text: string) {
     if (this.debug) {
       window.console.info(
@@ -111,6 +139,10 @@ class NestLogger {
     return text;
   }
 
+  /**
+   * Console info log with warning messages
+   * @param text Warning for user
+   */
   warn(text: string) {
     if (this.debug) {
       window.console.group(
@@ -125,6 +157,10 @@ class NestLogger {
     return text;
   }
 
+  /**
+   * Socket or some other event message
+   * @param text Event name/message
+   */
   event(text: string) {
     if (this.debug) {
       window.console.info(
@@ -137,6 +173,10 @@ class NestLogger {
     return text;
   }
 
+  /**
+   * Params sent to api
+   * @param params Express request params
+   */
   request(params: any) {
     const paramsString = JSON.stringify(params, null, 1);
     if (this.debug) {
