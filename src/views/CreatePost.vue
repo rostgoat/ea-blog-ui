@@ -39,13 +39,14 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { UsersModule } from "@/store/modules/users";
+import { PostsModule } from "@/store/modules/posts";
 import axios from "axios";
 
 @Component
 export default class CreatePost extends Vue {
-  postTitle = null;
-  postSubTitle = null;
-  postContent = null;
+  postTitle = "";
+  postSubTitle = "";
+  postContent = "";
 
   /**
    * Get user from state
@@ -63,11 +64,11 @@ export default class CreatePost extends Vue {
       username: this.loggedInUser.username
     };
 
-    // try {
-    //   await UsersModule.createPost(newPost);
-    // } catch (error) {
-    //   throw new Error(error);
-    // }
+    try {
+      await PostsModule.createPost(newPost);
+    } catch (error) {
+      throw new Error(error);
+    }
 
     const createPost = await axios.post(
       `${process.env.VUE_APP_SERVER_URL}/posts/create`,
