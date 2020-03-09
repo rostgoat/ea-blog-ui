@@ -78,7 +78,8 @@ class Users extends VuexModule {
     return {
       username: this.username,
       token: this.token,
-      name: this.name
+      name: this.name,
+      uid: this.uid
     };
   }
 }

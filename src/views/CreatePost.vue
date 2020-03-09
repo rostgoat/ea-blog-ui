@@ -40,10 +40,11 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { UsersModule } from "@/store/modules/users";
 import { PostsModule } from "@/store/modules/posts";
-import axios from "axios";
+import { Mixins } from "vue-mixin-decorator";
+import SuccessMixin from '../mixins/success';
 
 @Component
-export default class CreatePost extends Vue {
+export default class CreatePost extends Mixins<SuccessMixin>(SuccessMixin) {
   postTitle = "";
   postSubTitle = "";
   postContent = "";
@@ -55,33 +56,40 @@ export default class CreatePost extends Vue {
     return UsersModule.loggedInUser;
   }
 
+  /**
+   * Create post method handler. Grabs user uid from the state and
+   * makes API call to create a new post with that user uid.
+   */
   async onClickCreatePost() {
     console.log("loggedInUser", this.loggedInUser);
     const newPost = {
       title: this.postTitle,
       subTitle: this.postSubTitle,
       content: this.postContent,
-      username: this.loggedInUser.username
+      userUid: this.loggedInUser.uid
     };
 
     try {
       await PostsModule.createPost(newPost);
+      this.onClickCreatePostSuccess();
     } catch (error) {
       throw new Error(error);
     }
-
-    const createPost = await axios.post(
-      `${process.env.VUE_APP_SERVER_URL}/posts/create`,
-      newPost
-    );
-
-    if (createPost) {
-      this.$router.push("/");
-    }
   }
 
+  /**
+   * Create post success handler
+   */
+  onClickCreatePostSuccess() {
+    this.$successMixinMessage("Post Created Succefully!")
+    this.$router.push("/");
+  }
+
+  /**
+   * Cancel button handler
+   */
   onClickCancel() {
-    console.log("cancelled post");
+    this.$router.push("/");
   }
 }
 </script>

@@ -1,8 +1,5 @@
 <template>
   <v-app class="register-container">
-    <div class="registration-alert">
-      <ToastManager :toast="registrationToast" />
-    </div>
     <v-card width="400" class="mx-auto mt-5 register-card">
       <v-card-title class="register-card__title">
         <h1>Create Your Account</h1>
@@ -63,17 +60,17 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 import { emailRegex, passwordRegex, usernameRegex } from "@/utils/validators";
-import axios from "axios";
 import { UsersModule } from "@/store/modules/users";
+import { Mixins } from "vue-mixin-decorator";
+import SuccessMixin from "../mixins/success";
 
 import ToastManager from "@/components/ToastManager.vue";
 @Component({
   components: { ToastManager }
 })
-export default class Register extends Vue {
+export default class Register extends Mixins<SuccessMixin>(SuccessMixin) {
   name = "Register";
   showPassword = false;
 
@@ -114,20 +111,14 @@ export default class Register extends Vue {
     passwordConfirm: ""
   };
 
-  registrationSuccess = false;
-  registrationFailure = false;
-
-  registrationToast = {
-    type: "sucess",
-    text: "",
-    show: false
-  };
-
   loading = {
     error: false,
     registering: false
   };
 
+  /**
+   * Registration click event handler
+   */
   async onClickRegister() {
     const userToRegister = {
       name: this.registrationForm.name,
@@ -139,30 +130,23 @@ export default class Register extends Vue {
 
     try {
       await UsersModule.registerUser(userToRegister);
-      this.$router.push("/login");
+      this.onRegistrationSuccess();
     } catch (error) {
       throw new Error(error);
     }
   }
 
+  /**
+   * Registration success message
+   */
   onRegistrationSuccess() {
-    setTimeout(() => {
-      this.registrationSuccess = true;
-    }, 2000);
-    this.registrationSuccess = false;
-
-    // this.$router.push("login");
+    this.$successMixinMessage("Registration Succeful!");
+    this.$router.push("/login");
   }
 
-  onRegistrationFailure() {
-    this.registrationToast = {
-      type: "error",
-      text: "Failure during reg",
-      show: true
-    };
-    this.registrationFailure = true;
-  }
-
+  /**
+   * Login click event handler
+   */
   onClickLogin() {
     this.$router.push("login");
   }
@@ -175,13 +159,5 @@ export default class Register extends Vue {
   &__title {
     @include center-card__title;
   }
-}
-
-.registration-alert {
-  margin-top: 3rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
 }
 </style>

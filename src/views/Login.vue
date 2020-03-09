@@ -40,16 +40,14 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import JQuery from "jquery";
 import { Component, Prop } from "vue-property-decorator";
 import { UsersModule } from "@/store/modules/users";
-import ToastManager from "@/components/ToastManager.vue";
-import JQuery from "jquery";
+import { Mixins } from "vue-mixin-decorator";
+import SuccessMixin from "../mixins/success";
 
-@Component({
-  components: { ToastManager }
-})
-export default class Login extends Vue {
+@Component
+export default class Login extends Mixins<SuccessMixin>(SuccessMixin) {
   name = "Login";
   showPassword = false;
   usernameRules = [(username: string) => !!username || "Username is required"];
@@ -87,10 +85,18 @@ export default class Login extends Vue {
 
     try {
       await UsersModule.loginUser(userToLogin);
-      this.$router.push("/");
+      this.onClickLoginSuccess();
     } catch (error) {
       throw new Error(error);
     }
+  }
+
+  /**
+   * Login Suceess message
+   */
+  onClickLoginSuccess() {
+    this.$successMixinMessage("Login Succeful!");
+    this.$router.push("/");
   }
 }
 </script>
