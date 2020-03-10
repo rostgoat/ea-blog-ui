@@ -11,7 +11,6 @@
             :counter="100"
             label="Title"
             required
-            :rules="postTitleRules"
           ></v-text-field>
           <v-text-field
             v-model="postCreateForm.postSubTitle"

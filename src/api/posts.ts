@@ -17,7 +17,7 @@ export const edit = (uid: string, data: PostSubmit) => {
   });
 };
 
-export const detroy = (uid: string) => {
+export const destroy = (uid: string) => {
   return request({
     url: `/posts/${uid}`,
     method: "delete"
@@ -26,7 +26,7 @@ export const detroy = (uid: string) => {
 
 export const get = () => {
   return request({
-    url: `/posts/findAll`,
+    url: `/posts/find`,
     method: "get"
   });
 };

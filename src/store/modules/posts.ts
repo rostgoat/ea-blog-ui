@@ -22,6 +22,7 @@ class Posts extends VuexModule {
   public title = "";
   public sub_title = "";
   public content = "";
+  public posts = [];
 
   @Mutation
   private SET_POST_UID(uid: string) {
@@ -42,23 +43,26 @@ class Posts extends VuexModule {
     this.content = content;
   }
 
+  @Mutation
+  private SET_POSTS(posts: any) {
+    this.posts = posts;
+  }
+
   @Action({ rawError: true })
   async createPost(postsSubmit: PostSubmit) {
-    const response: any = await create(postsSubmit);
-    console.log('response', response)
-    if (typeof response !== "undefined") {
-      const { uid, title, sub_title, content } = response;
-
-      this.SET_POST_UID(uid);
-      this.SET_POST_TITLE(title);
-      this.SET_POST_SUBTITLE(sub_title);
-      this.SET_POST_CONTENT(content);
-    }
+    await create(postsSubmit);
   }
 
   @Action({ rawError: true })
   async getAllPosts() {
-    await get();
+    const response: any = await get();
+    if (typeof response !== "undefined") {
+      this.SET_POSTS(response);
+    }
+  }
+
+  get getPosts() {
+    return this.posts || [];
   }
 }
 

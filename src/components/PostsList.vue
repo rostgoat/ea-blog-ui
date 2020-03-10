@@ -19,21 +19,35 @@ export default class PostsList extends Vue {
   name = "PostsList";
   posts = [];
 
-  async mounted() {
-    await this.getPosts();
+  /**
+   * Get all posts from state
+   */
+  get allPosts() {
+    return PostsModule.getPosts;
   }
 
+  /**
+   * Get posts
+   */
+  async mounted() {
+    if (this.allPosts.length <= 0) {
+      await this.getPosts();
+    } else {
+      this.posts = this.allPosts;
+    }
+  }
+
+  /**
+   * Get all posts from all users and display them
+   */
   async getPosts() {
     try {
-      const posts = await PostsModule.getAllPosts();
-      console.log("posts", posts);
-      // // this.onClickCreatePostSuccess();
+      await PostsModule.getAllPosts();
+      this.posts = PostsModule.getPosts;
     } catch (error) {
       throw new Error(error);
     }
   }
-
-  // onClickGetAllPosts() {}
 }
 </script>
 
