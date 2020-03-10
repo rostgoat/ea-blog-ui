@@ -30,6 +30,15 @@ service.interceptors.request.use(
 // Response interceptors
 service.interceptors.response.use(
   response => {
+    const {data, status, statusText} = response;
+
+    if (status >= 200 || status <= 299) {
+      Message({
+        message: `${statusText}`,
+        type: "success",
+        duration: 3 * 1000
+      });
+    }
     return response.data;
   },
   error => {

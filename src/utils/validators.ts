@@ -16,3 +16,8 @@ export const passwordRegex = RegExp(
  * Validate username in forms
  */
 export const usernameRegex = RegExp(/^[A-Za-z]\w{7,14}$/);
+
+/**
+ * Validate input string length
+ */
+export const inputLength = RegExp(/^\w{0,100}$/);

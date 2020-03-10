@@ -23,3 +23,10 @@ export const detroy = (uid: string) => {
     method: "delete"
   });
 };
+
+export const get = () => {
+  return request({
+    url: `/posts/findAll`,
+    method: "get"
+  });
+};

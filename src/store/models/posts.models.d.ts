@@ -1,6 +1,6 @@
 export interface PostSubmit {
   title: string;
-  subTitle: string;
+  sub_title: string;
   content: string;
-  userUid: string;
+  user_uid: string;
 }

@@ -19,6 +19,7 @@ module.exports = {
     "@typescript-eslint/no-explicit-any": [ "off", {
       "fixToUnknown": true,
       "ignoreRestArgs": true
-    } ]
+    } ],
+    "@typescript-eslint/camelcase": ["off"]
   }
 };
