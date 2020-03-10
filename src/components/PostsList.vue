@@ -11,6 +11,7 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import PostListItem from "@/components/PostsListItem.vue";
 import { PostsModule } from "@/store/modules/posts";
+import { mapGetters } from "vuex";
 
 @Component({
   components: { PostListItem }
@@ -20,20 +21,13 @@ export default class PostsList extends Vue {
   posts = [];
 
   /**
-   * Get all posts from state
-   */
-  get allPosts() {
-    return PostsModule.getPosts;
-  }
-
-  /**
-   * Get posts
+   * Get posts either from state or from API
    */
   async mounted() {
-    if (this.allPosts.length <= 0) {
+    if (this.posts.length <= 0) {
       await this.getPosts();
     } else {
-      this.posts = this.allPosts;
+      this.posts = PostsModule.GET_POSTS;
     }
   }
 
@@ -42,8 +36,8 @@ export default class PostsList extends Vue {
    */
   async getPosts() {
     try {
-      await PostsModule.getAllPosts();
-      this.posts = PostsModule.getPosts;
+      await PostsModule.GET_ALL_POSTS();
+      this.posts = PostsModule.GET_POSTS;
     } catch (error) {
       throw new Error(error);
     }

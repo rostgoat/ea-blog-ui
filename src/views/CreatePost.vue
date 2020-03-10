@@ -79,7 +79,7 @@ export default class CreatePost extends Mixins<SuccessMixin>(SuccessMixin) {
     };
 
     try {
-      await PostsModule.createPost(newPost);
+      await PostsModule.CREATE_POST(newPost);
       this.onClickCreatePostSuccess();
     } catch (error) {
       console.log("error", error);
