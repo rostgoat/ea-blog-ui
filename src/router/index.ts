@@ -16,7 +16,7 @@ export default class CustomRouter extends VueRouter {
    * @returns {Boolean}
    */
   isAuthenticated() {
-    return !!UsersModule.loggedInUser.token;
+    return !!UsersModule.GET_USER.token;
   }
 
   /**
@@ -37,7 +37,7 @@ export default class CustomRouter extends VueRouter {
     this.beforeEach((to, from, next) => {
       if (to.matched.some(record => record.meta.requiresAuth)) {
         // eslint-disable-next-line no-extra-boolean-cast
-        if (!!UsersModule.loggedInUser.token) {
+        if (!!UsersModule.GET_USER.token) {
           next();
         } else {
           next({

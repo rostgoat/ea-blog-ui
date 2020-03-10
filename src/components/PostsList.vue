@@ -10,45 +10,37 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import PostListItem from "@/components/PostsListItem.vue";
-import axios from "axios";
+import { PostsModule } from "@/store/modules/posts";
+import { mapGetters } from "vuex";
 
 @Component({
   components: { PostListItem }
 })
 export default class PostsList extends Vue {
   name = "PostsList";
-  posts = [
-    // {
-    //   id: 1,
-    //   title: "Call of Duty: Black Ops 4",
-    //   content: `Integer vitae tellus ut quam convallis vestibulum. Duis tristique
-    //       lacus augue, sed mollis turpis scelerisque nec. Donec imperdiet
-    //       accumsan fermentum. Morbi quis metus congue diam aliquam commodo.
-    //       Maecenas eu justo at ante aliquam semper. Aenean accumsan nulla ac
-    //       felis blandit, nec tristique purus pulvinar.`,
-    //   author: "Evan You",
-    //   date: "Feb 14, 2020"
-    // },
-    // {
-    //   id: 2,
-    //   title: "Battlefield 1: Return of the Nazis",
-    //   content: `Integer vitae tellus ut quam convallis vestibulum. Duis tristique
-    //       lacus augue, sed mollis turpis scelerisque nec. Donec imperdiet
-    //       accumsan fermentum. Morbi quis metus congue diam aliquam commodo.
-    //       Maecenas eu justo at ante aliquam semper. Aenean accumsan nulla ac
-    //       felis blandit, nec tristique purus pulvinar.`,
-    //   author: "Johnny Lee",
-    //   date: "Jan 1, 2020"
-    // }
-  ];
+  posts = [];
 
+  /**
+   * Get posts either from state or from API
+   */
   async mounted() {
-    // await this.getPosts();
+    if (this.posts.length <= 0) {
+      await this.getPosts();
+    } else {
+      this.posts = PostsModule.GET_POSTS;
+    }
   }
 
+  /**
+   * Get all posts from all users and display them
+   */
   async getPosts() {
-    const posts = await axios.get(`${process.env.VUE_APP_SERVER_URL}/users`);
-    this.posts = posts.data[0].posts;
+    try {
+      await PostsModule.GET_ALL_POSTS();
+      this.posts = PostsModule.GET_POSTS;
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 }
 </script>

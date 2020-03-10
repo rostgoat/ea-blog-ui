@@ -7,19 +7,19 @@
       <v-card-text>
         <v-form>
           <v-text-field
-            v-model="postTitle"
+            v-model="postCreateForm.postTitle"
             :counter="100"
             label="Title"
             required
           ></v-text-field>
           <v-text-field
-            v-model="postSubTitle"
+            v-model="postCreateForm.postSubTitle"
             :counter="250"
             label="Sub Title"
             required
           ></v-text-field>
           <v-textarea
-            v-model="postContent"
+            v-model="postCreateForm.postContent"
             :counter="10000"
             label="Content"
             required
@@ -36,51 +36,68 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { UsersModule } from "@/store/modules/users";
-import axios from "axios";
+import { PostsModule } from "@/store/modules/posts";
+import { Mixins } from "vue-mixin-decorator";
+import SuccessMixin from "../mixins/success";
+import { inputLength } from "@/utils/validators";
 
 @Component
-export default class CreatePost extends Vue {
-  postTitle = null;
-  postSubTitle = null;
-  postContent = null;
+export default class CreatePost extends Mixins<SuccessMixin>(SuccessMixin) {
+  postCreateForm = {
+    postTitle: "",
+    postSubTitle: "",
+    postContent: ""
+  };
+
+  postTitleRules = [
+    (title: string) => !!title || "Title is required",
+    (title: string) =>
+      inputLength.test(title) ||
+      "Title Length needs to be between 0 to 100 characters."
+  ];
 
   /**
    * Get user from state
    */
   get loggedInUser() {
-    return UsersModule.loggedInUser;
+    return UsersModule.GET_USER;
   }
 
+  /**
+   * Create post method handler. Grabs user uid from the state and
+   * makes API call to create a new post with that user uid.
+   */
   async onClickCreatePost() {
-    console.log("loggedInUser", this.loggedInUser);
     const newPost = {
-      title: this.postTitle,
-      subTitle: this.postSubTitle,
-      content: this.postContent,
-      username: this.loggedInUser.username
+      title: this.postCreateForm.postTitle,
+      sub_title: this.postCreateForm.postSubTitle,
+      content: this.postCreateForm.postContent,
+      user_uid: this.loggedInUser.uid
     };
 
-    // try {
-    //   await UsersModule.createPost(newPost);
-    // } catch (error) {
-    //   throw new Error(error);
-    // }
-
-    const createPost = await axios.post(
-      `${process.env.VUE_APP_SERVER_URL}/posts/create`,
-      newPost
-    );
-
-    if (createPost) {
-      this.$router.push("/");
+    try {
+      await PostsModule.CREATE_POST(newPost);
+      this.onClickCreatePostSuccess();
+    } catch (error) {
+      throw new Error(error);
     }
   }
 
+  /**
+   * Create post success handler
+   */
+  onClickCreatePostSuccess() {
+    this.$successMixinMessage("Post Created Succefully!");
+    this.$router.push("/");
+  }
+
+  /**
+   * Cancel button handler
+   */
   onClickCancel() {
-    console.log("cancelled post");
+    this.$router.push("/");
   }
 }
 </script>
