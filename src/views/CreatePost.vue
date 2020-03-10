@@ -36,7 +36,6 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { UsersModule } from "@/store/modules/users";
 import { PostsModule } from "@/store/modules/posts";
@@ -63,7 +62,7 @@ export default class CreatePost extends Mixins<SuccessMixin>(SuccessMixin) {
    * Get user from state
    */
   get loggedInUser() {
-    return UsersModule.loggedInUser;
+    return UsersModule.GET_USER;
   }
 
   /**
@@ -82,7 +81,6 @@ export default class CreatePost extends Mixins<SuccessMixin>(SuccessMixin) {
       await PostsModule.CREATE_POST(newPost);
       this.onClickCreatePostSuccess();
     } catch (error) {
-      console.log("error", error);
       throw new Error(error);
     }
   }

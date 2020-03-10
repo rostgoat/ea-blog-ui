@@ -129,7 +129,7 @@ export default class Register extends Mixins<SuccessMixin>(SuccessMixin) {
     };
 
     try {
-      await UsersModule.registerUser(userToRegister);
+      await UsersModule.REGISTER_USER(userToRegister);
       this.onRegistrationSuccess();
     } catch (error) {
       throw new Error(error);

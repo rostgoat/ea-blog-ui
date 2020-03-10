@@ -63,7 +63,7 @@ export default class Login extends Mixins<SuccessMixin>(SuccessMixin) {
    * Get user from state
    */
   get loggedInUser() {
-    return UsersModule.loggedInUser;
+    return UsersModule.GET_USER;
   }
 
   /**
@@ -84,7 +84,7 @@ export default class Login extends Mixins<SuccessMixin>(SuccessMixin) {
     };
 
     try {
-      await UsersModule.loginUser(userToLogin);
+      await UsersModule.LOGIN_USER(userToLogin);
       this.onClickLoginSuccess();
     } catch (error) {
       throw new Error(error);

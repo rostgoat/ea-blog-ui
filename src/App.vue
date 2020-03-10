@@ -82,7 +82,7 @@ export default class App extends Vue {
    * Get user from state
    */
   get loggedInUser() {
-    return UsersModule.loggedInUser;
+    return UsersModule.GET_USER;
   }
 
   mounted() {
@@ -114,7 +114,7 @@ export default class App extends Vue {
    * Update nav bar links depending on user state
    */
   updateMenuLinks() {
-    const loggedIn = UsersModule.loggedInUser.token;
+    const loggedIn = UsersModule.GET_USER.token;
 
     if (loggedIn) {
       this.items = [];
@@ -166,7 +166,7 @@ export default class App extends Vue {
    * Click event when user clicks logout
    */
   onClickLogout() {
-    UsersModule.logout();
+    UsersModule.LOGOUT_USER();
     if (this.$route.name !== "Home") {
       this.$router.push("/");
     }
