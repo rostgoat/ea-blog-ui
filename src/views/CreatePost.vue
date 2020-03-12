@@ -24,6 +24,7 @@
             label="Content"
             required
           ></v-textarea>
+          <ImageUploader />
           <v-card-actions>
             <v-btn color="danger" @click="onClickCancel">Cancel</v-btn>
             <v-spacer></v-spacer>
@@ -42,8 +43,13 @@ import { PostsModule } from "@/store/modules/posts";
 import { Mixins } from "vue-mixin-decorator";
 import SuccessMixin from "../mixins/success";
 import { inputLength } from "@/utils/validators";
+import ImageUploader from "@/components/ImageUploader.vue";
 
-@Component
+@Component({
+  components: {
+    ImageUploader
+  }
+})
 export default class CreatePost extends Mixins<SuccessMixin>(SuccessMixin) {
   postCreateForm = {
     postTitle: "",
