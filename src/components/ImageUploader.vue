@@ -5,10 +5,10 @@
       <div class="dropbox">
         <input
           type="file"
-          multiple
           :name="uploadFieldName"
           :disabled="isSaving"
-          @change="filesChange($event.target.name $event.target.files);
+          @change="
+            filesChange($event.target.name, $event.target.files, $event);
             fileCount = $event.target.files.length;
           "
           accept="image/*"
@@ -34,7 +34,7 @@ export default class ImageUploader extends Vue {
   uploadedFiles = [];
   uploadError = null;
   currentStatus = 0;
-  uploadFieldName = "photos";
+  uploadFieldName = "post_photo";
 
   STATUS_INITIAL = 0;
   STATUS_SAVING = 1;
@@ -61,22 +61,25 @@ export default class ImageUploader extends Vue {
     this.uploadError = null;
   }
 
-  save(formData) {
+  save(formData: FormData) {
     // upload data to the server
     this.currentStatus = this.STATUS_SAVING;
+    this.$emit("formData", formData);
 
-    upload(formData)
-      .then(x => {
-        this.uploadedFiles = [].concat(x);
-        this.currentStatus = this.STATUS_SUCCESS;
-      })
-      .catch(err => {
-        this.uploadError = err.response;
-        this.currentStatus = this.STATUS_FAILED;
-      });
+    // upload(formData)
+    //   .then(x => {
+    //     this.uploadedFiles = [].concat(x);
+    //     this.currentStatus = this.STATUS_SUCCESS;
+    //   })
+    //   .catch(err => {
+    //     this.uploadError = err.response;
+    //     this.currentStatus = this.STATUS_FAILED;
+    //   });
   }
 
-  filesChange(fieldName, fileList) {
+  filesChange(fieldName: string, fileList: any, e: any) {
+    console.log("fieldName", fieldName);
+    console.log("fileList", fileList);
     // handle file changes
     const formData = new FormData();
 

@@ -24,7 +24,19 @@
             label="Content"
             required
           ></v-textarea>
-          <ImageUploader />
+          <!-- <v-file-input
+            accept="image/png, image/jpeg, image/bmp"
+            placeholder="Pick a blog photo"
+            prepend-icon="mdi-camera"
+            clearable
+            v-model="file"
+            v-cloak
+            @change="filesChange($event)"
+            @drop.prevent="addDropFile"
+            @dragover.prevent
+          ></v-file-input> -->
+
+          <ImageUploader @formData="onImageUploaded" />
           <v-card-actions>
             <v-btn color="danger" @click="onClickCancel">Cancel</v-btn>
             <v-spacer></v-spacer>
@@ -44,6 +56,7 @@ import { Mixins } from "vue-mixin-decorator";
 import SuccessMixin from "../mixins/success";
 import { inputLength } from "@/utils/validators";
 import ImageUploader from "@/components/ImageUploader.vue";
+import { upload } from "@/api/photos";
 
 @Component({
   components: {
@@ -64,11 +77,20 @@ export default class CreatePost extends Mixins<SuccessMixin>(SuccessMixin) {
       "Title Length needs to be between 0 to 100 characters."
   ];
 
+  file: any = null;
+
   /**
    * Get user from state
    */
   get loggedInUser() {
     return UsersModule.GET_USER;
+  }
+
+  async onImageUploaded(file: FormData) {
+    console.log("file", file.get("post_photo"));
+    this.file = file;
+
+    await upload(this.file);
   }
 
   /**
