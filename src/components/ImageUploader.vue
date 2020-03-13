@@ -5,12 +5,8 @@
       <div class="dropbox">
         <input
           type="file"
-          :name="uploadFieldName"
           :disabled="isSaving"
-          @change="
-            filesChange($event.target.name, $event.target.files, $event);
-            fileCount = $event.target.files.length;
-          "
+          @change="onImageSelected"
           accept="image/*"
           class="input-file"
         />
@@ -27,20 +23,27 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
+import { upload } from "@/api/photos";
 
 @Component
 export default class ImageUploader extends Vue {
-  name = "app";
   uploadedFiles = [];
   uploadError = null;
-  currentStatus = 0;
+  currentStatus = 0; // 0 by default
+  filesLength = 0;
   uploadFieldName = "post_photo";
+  selectedImage: string | Blob = "";
+  selectedImageName = "";
 
+  // upload status codes
   STATUS_INITIAL = 0;
   STATUS_SAVING = 1;
   STATUS_SUCCESS = 2;
   STATUS_FAILED = 3;
 
+  get fileCount() {
+    return this.filesLength;
+  }
   get isInitial() {
     return this.currentStatus === this.STATUS_INITIAL;
   }
@@ -54,48 +57,61 @@ export default class ImageUploader extends Vue {
     return this.currentStatus === this.STATUS_FAILED;
   }
 
+  mounted() {
+    this.reset();
+  }
+
+  /**
+   * Gather image information from the input field and
+   * add that information to FormData object
+   */
+  async onImageSelected(event: any) {
+    const { target } = event;
+
+    this.selectedImage = target.files[0];
+    this.selectedImageName = target.files[0].name;
+    this.filesLength = target.files.length;
+
+    const formData = new FormData();
+
+    // add image info to formdata
+    formData.append(
+      this.uploadFieldName,
+      this.selectedImage,
+      this.selectedImageName
+    );
+
+    // upload image to database
+    await this.onImageUpload(formData);
+  }
+
+  /**
+   * Upload image to database
+   */
+  async onImageUpload(form: FormData) {
+    this.currentStatus = this.STATUS_SAVING;
+
+    try {
+      const res = await upload(form);
+      if (res) {
+        // this.uploadedFiles = [].concat(0);
+        this.currentStatus = this.STATUS_SUCCESS;
+      }
+    } catch (error) {
+      this.uploadError = error.response;
+      this.currentStatus = this.STATUS_FAILED;
+      throw new Error(error);
+    }
+  }
+
+  /**
+   * Reset image upload form to default on page mount
+   */
   reset() {
     // reset form to initial state
     this.currentStatus = this.STATUS_INITIAL;
     this.uploadedFiles = [];
     this.uploadError = null;
-  }
-
-  save(formData: FormData) {
-    // upload data to the server
-    this.currentStatus = this.STATUS_SAVING;
-    this.$emit("formData", formData);
-
-    // upload(formData)
-    //   .then(x => {
-    //     this.uploadedFiles = [].concat(x);
-    //     this.currentStatus = this.STATUS_SUCCESS;
-    //   })
-    //   .catch(err => {
-    //     this.uploadError = err.response;
-    //     this.currentStatus = this.STATUS_FAILED;
-    //   });
-  }
-
-  filesChange(fieldName: string, fileList: any, e: any) {
-    console.log("fieldName", fieldName);
-    console.log("fileList", fileList);
-    // handle file changes
-    const formData = new FormData();
-
-    if (!fileList.length) return;
-
-    // append the files to FormData
-    Array.from(Array(fileList.length).keys()).map(x => {
-      formData.append(fieldName, fileList[x], fileList[x].name);
-    });
-
-    // save it
-    this.save(formData);
-  }
-
-  mounted() {
-    this.reset();
   }
 }
 </script>
