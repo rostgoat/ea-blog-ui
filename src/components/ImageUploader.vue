@@ -123,8 +123,9 @@ export default class ImageUploader extends Vue {
 
     try {
       const res = await upload(form);
+      console.log("res", res);
       if (res) {
-        // this.uploadedFiles = [].concat(0);
+        this.$emit("onImageUploaded", res);
         this.currentStatus = this.STATUS_SUCCESS;
       }
     } catch (error) {
