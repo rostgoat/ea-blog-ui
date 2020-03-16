@@ -51,6 +51,21 @@ import { Component, Prop } from "vue-property-decorator";
 export default class PostsListItem extends Vue {
   name = "PostsListItem";
   @Prop() post!: object;
+
+  mounted() {
+    this.bufferToImage();
+  }
+
+  bufferToImage() {
+    // Obtain a blob: URL for the image data.
+    // todo: stopped here
+    // const arrayBufferView = new Uint8Array(this.response);
+    // const blob = new Blob([arrayBufferView], { type: "image/jpeg" });
+    // const urlCreator = window.URL || window.webkitURL;
+    // const imageUrl = urlCreator.createObjectURL(blob);
+    // const img = document.querySelector("#photo");
+    // img.src = imageUrl;
+  }
 }
 </script>
 
