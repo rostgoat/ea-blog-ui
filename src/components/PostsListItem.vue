@@ -3,8 +3,9 @@
     <v-container class="posts-list-item__content">
       <v-card flat class="posts-list-item__container posts-list-item__image">
         <v-img
+          id="photo"
           class="pa-2 posts-list-item__img"
-          src="https://picsum.photos/510/300?random"
+          :src="imageSrc"
         ></v-img>
       </v-card>
       <v-card
@@ -50,21 +51,42 @@ import { Component, Prop } from "vue-property-decorator";
 @Component
 export default class PostsListItem extends Vue {
   name = "PostsListItem";
-  @Prop() post!: object;
+  @Prop() post!: any;
+  imageSrc = "";
 
+  get imgSrc() {
+    return (
+      "data:image/jpeg;base64," +
+      btoa(
+        new Uint8Array(this.post.photo.buffer).reduce(
+          (data, byte) => data + String.fromCharCode(byte),
+          ""
+        )
+      )
+    );
+  }
+  /**
+   * grab image from parent on mount
+   */
   mounted() {
     this.bufferToImage();
   }
 
+  /**
+   * Convert buffer into image and display in src tag
+   */
   bufferToImage() {
-    // Obtain a blob: URL for the image data.
-    // todo: stopped here
-    // const arrayBufferView = new Uint8Array(this.response);
-    // const blob = new Blob([arrayBufferView], { type: "image/jpeg" });
-    // const urlCreator = window.URL || window.webkitURL;
-    // const imageUrl = urlCreator.createObjectURL(blob);
-    // const img = document.querySelector("#photo");
-    // img.src = imageUrl;
+    if (this.post.photo !== null) {
+      console.log("inside: ", this.post.photo.buffer);
+      const arrayBufferView = new Uint8Array(this.post.photo.buffer);
+      const blob = new Blob([arrayBufferView], { type: "image/jpg" });
+      const urlCreator = window.URL || window.webkitURL;
+      const imageUrl = urlCreator.createObjectURL(blob);
+      console.log("imgurl: ", imageUrl);
+      this.imageSrc = imageUrl;
+    } else {
+      this.imageSrc = "https://picsum.photos/510/300?random";
+    }
   }
 }
 </script>

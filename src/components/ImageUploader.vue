@@ -97,6 +97,7 @@ export default class ImageUploader extends Vue {
    */
   async onImageSelected(event: any) {
     const { target } = event;
+    console.log("event", URL.createObjectURL(event.target.files[0]));
 
     this.selectedImage = target.files[0];
     this.selectedImageName = target.files[0].name;
@@ -123,7 +124,6 @@ export default class ImageUploader extends Vue {
 
     try {
       const res = await upload(form);
-      console.log("res", res);
       if (res) {
         this.$emit("onImageUploaded", res);
         this.currentStatus = this.STATUS_SUCCESS;
