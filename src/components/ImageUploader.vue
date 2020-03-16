@@ -11,7 +11,7 @@
           class="input-file"
         />
         <p v-if="isInitial">
-          Drag your file(s) here to begin<br />
+          Drag your image here to begin<br />
           or click to browse
         </p>
         <p v-if="isSaving">Uploading {{ fileCount }} files...</p>
@@ -35,6 +35,7 @@ export default class ImageUploader extends Vue {
   uploadFieldName = "post_photo";
   selectedImage: string | Blob = "";
   selectedImageName = "";
+  loading = false;
 
   // upload status codes
   STATUS_INITIAL = 0;
@@ -97,7 +98,6 @@ export default class ImageUploader extends Vue {
    */
   async onImageSelected(event: any) {
     const { target } = event;
-    console.log("event", URL.createObjectURL(event.target.files[0]));
 
     this.selectedImage = target.files[0];
     this.selectedImageName = target.files[0].name;

@@ -5,7 +5,7 @@
         <v-img
           id="photo"
           class="pa-2 posts-list-item__img"
-          :src="imageSrc"
+          :src="imgSrc"
         ></v-img>
       </v-card>
       <v-card
@@ -52,41 +52,12 @@ import { Component, Prop } from "vue-property-decorator";
 export default class PostsListItem extends Vue {
   name = "PostsListItem";
   @Prop() post!: any;
-  imageSrc = "";
 
+  /**
+   * Load image from post
+   */
   get imgSrc() {
-    return (
-      "data:image/jpeg;base64," +
-      btoa(
-        new Uint8Array(this.post.photo.buffer).reduce(
-          (data, byte) => data + String.fromCharCode(byte),
-          ""
-        )
-      )
-    );
-  }
-  /**
-   * grab image from parent on mount
-   */
-  mounted() {
-    this.bufferToImage();
-  }
-
-  /**
-   * Convert buffer into image and display in src tag
-   */
-  bufferToImage() {
-    if (this.post.photo !== null) {
-      console.log("inside: ", this.post.photo.buffer);
-      const arrayBufferView = new Uint8Array(this.post.photo.buffer);
-      const blob = new Blob([arrayBufferView], { type: "image/jpg" });
-      const urlCreator = window.URL || window.webkitURL;
-      const imageUrl = urlCreator.createObjectURL(blob);
-      console.log("imgurl: ", imageUrl);
-      this.imageSrc = imageUrl;
-    } else {
-      this.imageSrc = "https://picsum.photos/510/300?random";
-    }
+    return `${process.env.VUE_APP_BASE_URL}/${this.post.photo.title}`;
   }
 }
 </script>
