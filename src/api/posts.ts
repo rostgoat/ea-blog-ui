@@ -5,7 +5,7 @@ export const create = (data: PostSubmit) => {
   return request({
     url: "/posts/create",
     method: "post",
-    data
+    data,
   });
 };
 

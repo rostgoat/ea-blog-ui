@@ -5,7 +5,7 @@
         <h1>Create Post</h1>
       </v-card-title>
       <v-card-text>
-        <v-form>
+        <v-form enctype="multipart/form-data">
           <v-text-field
             v-model="postCreateForm.postTitle"
             :counter="100"
@@ -24,6 +24,7 @@
             label="Content"
             required
           ></v-textarea>
+          <ImageUploader @onImageUploaded="onImageUploaded" />
           <v-card-actions>
             <v-btn color="danger" @click="onClickCancel">Cancel</v-btn>
             <v-spacer></v-spacer>
@@ -42,8 +43,13 @@ import { PostsModule } from "@/store/modules/posts";
 import { Mixins } from "vue-mixin-decorator";
 import SuccessMixin from "../mixins/success";
 import { inputLength } from "@/utils/validators";
+import ImageUploader from "@/components/ImageUploader.vue";
 
-@Component
+@Component({
+  components: {
+    ImageUploader
+  }
+})
 export default class CreatePost extends Mixins<SuccessMixin>(SuccessMixin) {
   postCreateForm = {
     postTitle: "",
@@ -58,11 +64,24 @@ export default class CreatePost extends Mixins<SuccessMixin>(SuccessMixin) {
       "Title Length needs to be between 0 to 100 characters."
   ];
 
+  post_image_uid = "";
+
   /**
    * Get user from state
    */
   get loggedInUser() {
     return UsersModule.GET_USER;
+  }
+
+  /**
+   * Callback event handler from Image Uploader class that
+   * returns the response data from the API
+   */
+  onImageUploaded(response: any) {
+    if (response) {
+      this.$successMixinMessage("Image Uploaded Succesfully!");
+      this.post_image_uid = response.uid;
+    }
   }
 
   /**
@@ -74,7 +93,8 @@ export default class CreatePost extends Mixins<SuccessMixin>(SuccessMixin) {
       title: this.postCreateForm.postTitle,
       sub_title: this.postCreateForm.postSubTitle,
       content: this.postCreateForm.postContent,
-      user_uid: this.loggedInUser.uid
+      user_uid: this.loggedInUser.uid,
+      post_image_uid: this.post_image_uid
     };
 
     try {

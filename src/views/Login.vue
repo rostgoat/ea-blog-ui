@@ -40,7 +40,7 @@
 </template>
 
 <script lang="ts">
-import JQuery from "jquery";
+import $ from "jquery";
 import { Component, Prop } from "vue-property-decorator";
 import { UsersModule } from "@/store/modules/users";
 import { Mixins } from "vue-mixin-decorator";
@@ -56,7 +56,6 @@ export default class Login extends Mixins<SuccessMixin>(SuccessMixin) {
     username: "",
     password: ""
   };
-
   @Prop() toggleLogin!: boolean;
 
   /**
@@ -71,7 +70,7 @@ export default class Login extends Mixins<SuccessMixin>(SuccessMixin) {
    */
   mounted() {
     // hacking with Jquery because Vuetify doesn't have input autofocus
-    JQuery("input:text:visible:first").focus();
+    $("input:text:visible:first").focus();
   }
 
   /**

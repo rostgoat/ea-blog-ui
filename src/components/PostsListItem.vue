@@ -3,8 +3,9 @@
     <v-container class="posts-list-item__content">
       <v-card flat class="posts-list-item__container posts-list-item__image">
         <v-img
+          id="photo"
           class="pa-2 posts-list-item__img"
-          src="https://picsum.photos/510/300?random"
+          :src="imgSrc"
         ></v-img>
       </v-card>
       <v-card
@@ -50,7 +51,14 @@ import { Component, Prop } from "vue-property-decorator";
 @Component
 export default class PostsListItem extends Vue {
   name = "PostsListItem";
-  @Prop() post!: object;
+  @Prop() post!: any;
+
+  /**
+   * Load image from post
+   */
+  get imgSrc() {
+    return `${process.env.VUE_APP_BASE_URL}/${this.post.photo.title}`;
+  }
 }
 </script>
 
