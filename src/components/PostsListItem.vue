@@ -33,10 +33,34 @@
             justify="end"
             class="posts-list-item__actions-buttons"
           >
-            <v-icon class="mr-1">mdi-heart</v-icon>
-            <span class="subheading mr-2">256</span>
-            <v-icon class="mr-1">mdi-share-variant</v-icon>
-            <span class="subheading">45</span>
+            <v-btn
+              class="ma-2"
+              text
+              icon
+              color="blue lighten-2"
+              @click="onClickLikePost"
+            >
+              <v-icon>mdi-thumb-up</v-icon>
+            </v-btn>
+
+            <v-btn
+              class="ma-2"
+              text
+              icon
+              color="red lighten-2"
+              @click="onClickDislikePost"
+            >
+              <v-icon>mdi-thumb-down</v-icon>
+            </v-btn>
+            <v-btn
+              class="ma-2"
+              text
+              icon
+              color="green lighten-2"
+              @click="onClickSharePost"
+            >
+              <v-icon class="mr-1">mdi-share-variant</v-icon>
+            </v-btn>
           </v-row>
         </div>
       </v-card>
@@ -58,6 +82,27 @@ export default class PostsListItem extends Vue {
    */
   get imgSrc() {
     return `${process.env.VUE_APP_BASE_URL}/${this.post.photo.title}`;
+  }
+
+  /**
+   * Event handler for liking a post
+   */
+  onClickLikePost() {
+    console.log("liked post");
+  }
+
+  /**
+   * Event handler for disliking a post
+   */
+  onClickDislikePost() {
+    console.log("disliked post");
+  }
+
+  /**
+   * Event handler for sharing a post
+   */
+  onClickSharePost() {
+    console.log("shared post");
   }
 }
 </script>
