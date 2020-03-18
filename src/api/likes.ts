@@ -9,9 +9,9 @@ export const like = (data: LikesSubmit) => {
   });
 };
 
-export const dislike = (data: LikesSubmit) => {
+export const unlike = (data: LikesSubmit) => {
     return request({
-      url: "/likes/dislike",
+      url: "/likes/unlike",
       method: "put",
       data,
     });

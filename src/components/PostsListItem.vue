@@ -71,7 +71,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
-import { like, dislike } from "@/api/likes";
+import { like, unlike } from "@/api/likes";
 import { UsersModule } from "@/store/modules/users";
 
 @Component
@@ -114,6 +114,7 @@ export default class PostsListItem extends Vue {
    * Event handler for disliking a post
    */
   onClickDislikePost() {
+    console.log("this.post", this.post);
     console.log("disliked post");
   }
 
