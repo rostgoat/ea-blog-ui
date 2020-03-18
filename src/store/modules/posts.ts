@@ -9,9 +9,9 @@ import store from "@/store";
 import { PostSubmit } from "../models/posts.models";
 import { create, get } from "@/api/posts";
 import { setToken } from "@/utils/cookies";
-import {GET_POSTS} from '../types/getters'
-import { GET_ALL_POSTS, CREATE_POST } from '../types/actions';
-import { SET_POSTS } from '../types/mutations';
+import { GET_POSTS } from "../types/getters";
+import { GET_ALL_POSTS, CREATE_POST } from "../types/actions";
+import { SET_POSTS } from "../types/mutations";
 
 @Module({
   namespaced: true,

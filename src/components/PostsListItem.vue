@@ -37,7 +37,7 @@
               class="ma-2"
               text
               icon
-              color="blue lighten-2"
+              :color="likeColor"
               @click="onClickLikePost"
             >
               <v-icon>mdi-thumb-up</v-icon>
@@ -70,12 +70,16 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, Watch } from "vue-property-decorator";
+import { like, dislike } from "@/api/likes";
+import { UsersModule } from "@/store/modules/users";
 
 @Component
 export default class PostsListItem extends Vue {
   name = "PostsListItem";
   @Prop() post!: any;
+
+  likeColor = "lighten-2";
 
   /**
    * Load image from post
@@ -85,10 +89,25 @@ export default class PostsListItem extends Vue {
   }
 
   /**
+   * Get user from state
+   */
+  get loggedInUser() {
+    return UsersModule.GET_USER;
+  }
+
+  /**
    * Event handler for liking a post
    */
-  onClickLikePost() {
-    console.log("liked post");
+  async onClickLikePost() {
+    const res = await like({
+      user_uid: this.loggedInUser.uid,
+      post_uid: this.post.uid
+    });
+
+    if (res) {
+      this.onUpdateIconColor("like");
+    }
+    console.log("res: ", res);
   }
 
   /**
@@ -103,6 +122,12 @@ export default class PostsListItem extends Vue {
    */
   onClickSharePost() {
     console.log("shared post");
+  }
+
+  onUpdateIconColor(method: string) {
+    if (method === "like") {
+      this.likeColor = "blue lighten-2";
+    }
   }
 }
 </script>
