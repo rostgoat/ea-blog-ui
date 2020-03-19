@@ -17,3 +17,10 @@ export const unlike = (data: Partial<LikesSubmit>) => {
   });
 };
 
+export const relike = (data: Partial<LikesSubmit>) => {
+  return request({
+    url: "/likes/relike",
+    method: "put",
+    data
+  });
+};

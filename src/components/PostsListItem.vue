@@ -62,7 +62,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
-import { like, unlike } from "@/api/likes";
+import { like, unlike, relike } from "@/api/likes";
 import { UsersModule } from "@/store/modules/users";
 import { PostsModule } from "@/store/modules/posts";
 
@@ -109,37 +109,112 @@ export default class PostsListItem extends Vue {
   }
 
   /**
-   * Event handler for liking and post
+   * Event handler for liking, unliking and reliking a post
    */
   async onClickLikePost() {
-    console.log("this.likeStatus", this.likeStatus);
-    console.log("this.post.like_uid", this.post.like_uid);
-    if (!this.likeStatus && !this.post.like_uid) {
-      const res = await like({
-        user_uid: this.loggedInUser.uid,
-        post_uid: this.post.p_uid
-      });
+    // liking post for the first time
+    // post is NOT liked (false in db) AND does NOT have a uid AND icon color is grey
+    if (!this.likeStatus && !this.post.like_uid && !this.post.post_liked) {
+      await this.likePostForTheFirstTime();
 
-      if (res.post_liked) {
-        this.onUpdateIconColor(this.colors.liked);
-        console.log("calling UPDATE_POSTS", res);
-        await PostsModule.UPDATE_POSTS({
-          like_uid: res.uid,
-          post_liked: res.post_liked
-        });
-      }
-    } else {
-      console.log("unliking");
-      console.log("uid", this.post.like_uid);
-      console.log("post_liked", this.post.post_liked);
-      const res = await unlike({
-        uid: this.post.like_uid,
-        post_liked: this.post.post_liked
+      // reliking post
+      // post is NOT liked (false in db) but has a uid and icon is grey
+    } else if (
+      !this.likeStatus &&
+      !!this.post.like_uid &&
+      !this.post.post_liked
+    ) {
+      await this.relikePost();
+
+      // unliking post
+      // post IS liked, icon is set to blue and post uid exist in state
+    } else if (this.likeStatus && this.post.like_uid && this.post.post_liked) {
+      await this.unlikePost();
+    }
+  }
+
+  /**
+   * Method creates a Like object in the database and flips `post_liked` prop to true
+   * Data is reflected in state thereafter
+   */
+  async likePost() {
+    const res = await like({
+      user_uid: this.loggedInUser.uid,
+      post_uid: this.post.p_uid
+    });
+
+    const { uid, post_liked } = res;
+
+    // if post_liked is true in the db
+    if (post_liked) {
+      // update the icon color
+      this.onUpdateIconColor(this.colors.liked);
+
+      // update the post object in state with like data
+      await PostsModule.UPDATE_POSTS({
+        like_uid: uid,
+        post_liked,
+        p_uid: this.post.p_uid
       });
-      console.log("res", res);
-      if (!res.post_liked) {
-        this.onUpdateIconColor(this.colors.unliked);
-      }
+    }
+  }
+
+  /**
+   * Method updates the Like object in the database and flips `post_liked` prop to false
+   * Data is reflected in state thereafter
+   */
+  async unlikePost() {
+    const res = await unlike({
+      uid: this.post.like_uid,
+      post_liked: this.post.post_liked
+    });
+
+    const { uid, post_liked } = res;
+
+    // if post_liked was set to false in db
+    if (!post_liked) {
+      // change icon color to default
+      this.onUpdateIconColor(this.colors.unliked);
+
+      // update the post object in state with like data
+      await PostsModule.UPDATE_POSTS({
+        like_uid: uid,
+        post_liked,
+        p_uid: this.post.p_uid
+      });
+    }
+  }
+
+  /**
+   * Method is only called when post has never been liked
+   * (like object does not exist in db and like_uid is null)
+   */
+  async likePostForTheFirstTime() {
+    await this.likePost();
+  }
+
+  /**
+   * Method exists to simply relike a post a flip `post_liked` to true
+   */
+  async relikePost() {
+    const res = await relike({
+      uid: this.post.like_uid,
+      post_liked: this.post.post_liked
+    });
+
+    const { uid, post_liked } = res;
+
+    // if post_liked is true in the db
+    if (post_liked) {
+      // update the icon color
+      this.onUpdateIconColor(this.colors.liked);
+
+      // update the post object in state with like data
+      await PostsModule.UPDATE_POSTS({
+        like_uid: uid,
+        post_liked,
+        p_uid: this.post.p_uid
+      });
     }
   }
 
