@@ -5,14 +5,22 @@ export const like = (data: LikesSubmit) => {
   return request({
     url: "/likes/like",
     method: "post",
-    data,
+    data
   });
 };
 
 export const unlike = (data: LikesSubmit) => {
-    return request({
-      url: "/likes/unlike",
-      method: "put",
-      data,
-    });
-  };
+  return request({
+    url: "/likes/unlike",
+    method: "put",
+    data
+  });
+};
+
+export const status = (data: LikesSubmit) => {
+  return request({
+    url: "/likes/status",
+    method: "get",
+    data
+  });
+};

@@ -13,19 +13,19 @@
         class="posts-list-item__container posts-list-item__description"
       >
         <v-card-title class="mb-4 posts-list-item__title">{{
-          post.title
+          post.post_title
         }}</v-card-title>
         <v-card-subtitle class="posts-list-item__subtitle">
-          {{ post.content }}
+          {{ post.post_content }}
         </v-card-subtitle>
 
         <div class="posts-list-item__actions mt-3">
           <div class="posts-list-item__actions-author">
-            {{ post.author }}
+            {{ post.post_author }}
           </div>
 
           <div class="posts-list-item__actions-date">
-            {{ post.date }}
+            {{ post.post_date }}
           </div>
 
           <v-row
@@ -43,15 +43,6 @@
               <v-icon>mdi-thumb-up</v-icon>
             </v-btn>
 
-            <v-btn
-              class="ma-2"
-              text
-              icon
-              color="red lighten-2"
-              @click="onClickDislikePost"
-            >
-              <v-icon>mdi-thumb-down</v-icon>
-            </v-btn>
             <v-btn
               class="ma-2"
               text
@@ -85,7 +76,8 @@ export default class PostsListItem extends Vue {
    * Load image from post
    */
   get imgSrc() {
-    return `${process.env.VUE_APP_BASE_URL}/${this.post.photo.title}`;
+    console.log("this.post", this.post);
+    return `${process.env.VUE_APP_BASE_URL}/${this.post.photo_title}`;
   }
 
   /**
@@ -101,21 +93,13 @@ export default class PostsListItem extends Vue {
   async onClickLikePost() {
     const res = await like({
       user_uid: this.loggedInUser.uid,
-      post_uid: this.post.uid
+      post_uid: this.post.p_uid
     });
 
-    if (res) {
-      this.onUpdateIconColor("like");
+    if (res.post_liked) {
+      this.onUpdateIconColor("blue lighten-2");
     }
     console.log("res: ", res);
-  }
-
-  /**
-   * Event handler for disliking a post
-   */
-  onClickDislikePost() {
-    console.log("this.post", this.post);
-    console.log("disliked post");
   }
 
   /**
@@ -125,10 +109,14 @@ export default class PostsListItem extends Vue {
     console.log("shared post");
   }
 
-  onUpdateIconColor(method: string) {
-    if (method === "like") {
-      this.likeColor = "blue lighten-2";
-    }
+  onUpdateIconColor(color: string) {
+    this.likeColor = color;
+  }
+
+  mounted() {
+    this.post.like_uid !== null
+      ? this.onUpdateIconColor("blue lighten-2")
+      : this.onUpdateIconColor("lighten-2");
   }
 }
 </script>
