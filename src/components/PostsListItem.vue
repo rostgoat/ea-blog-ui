@@ -268,7 +268,13 @@ export default class PostsListItem extends Vue {
 .posts-list-item {
   width: 90% !important;
   margin: auto !important;
+  transition: all 0.3s ease !important;
 
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: map-get($box-shadows, boxShadowDark);
+    cursor: pointer;
+  }
   &__title {
     font-size: 2rem !important;
   }
