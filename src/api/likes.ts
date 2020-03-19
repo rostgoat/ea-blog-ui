@@ -24,3 +24,10 @@ export const relike = (data: Partial<LikesSubmit>) => {
     data
   });
 };
+
+export const likesCount = () => {
+  return request({
+    url: "/likes/likes",
+    method: "get",
+  });
+};

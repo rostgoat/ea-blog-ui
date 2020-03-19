@@ -39,6 +39,9 @@
             justify="end"
             class="posts-list-item__actions-buttons"
           >
+            <div class="posts-list-item__like-count">
+              {{ count }}
+            </div>
             <v-btn
               class="ma-2"
               text
@@ -68,7 +71,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
-import { like, unlike, relike } from "@/api/likes";
+import { like, unlike, relike, likesCount } from "@/api/likes";
 import { UsersModule } from "@/store/modules/users";
 import { PostsModule } from "@/store/modules/posts";
 import moment from "moment";
@@ -85,6 +88,8 @@ export default class PostsListItem extends Vue {
 
   likeColor = "lighten-2";
   content = "";
+  count: number | Promise<any> = 0;
+
   /**
    * Load image from post
    */
@@ -113,6 +118,9 @@ export default class PostsListItem extends Vue {
     return this.post.post_content.length;
   }
 
+  /**
+   * Format post creation date for user readibility
+   */
   get formatPostCreatedDate() {
     return moment(this.post.post_created_at).format("MMMM DD, YYYY");
   }
@@ -120,7 +128,9 @@ export default class PostsListItem extends Vue {
   /**
    * When DOM mounts check to see if post has been liked
    */
-  mounted() {
+  async mounted() {
+    this.count = await this.getLikesCount();
+    console.log("this.count", this.count);
     this.trimPostContentLength();
     this.post.post_liked
       ? this.onUpdateIconColor(this.colors.liked)
@@ -138,6 +148,9 @@ export default class PostsListItem extends Vue {
     }
   }
 
+  async getLikesCount() {
+    return await likesCount();
+  }
   /**
    * Event handler for liking, unliking and reliking a post
    */
@@ -161,6 +174,7 @@ export default class PostsListItem extends Vue {
     } else if (this.likeStatus && this.post.like_uid && this.post.post_liked) {
       await this.unlikePost();
     }
+    this.count = this.post.total_likes;
   }
 
   /**
@@ -175,6 +189,9 @@ export default class PostsListItem extends Vue {
 
     const { uid, post_liked } = res;
 
+    // get likes count
+    const count = await this.getLikesCount();
+
     // if post_liked is true in the db
     if (post_liked) {
       // update the icon color
@@ -184,7 +201,8 @@ export default class PostsListItem extends Vue {
       await PostsModule.UPDATE_POSTS({
         like_uid: uid,
         post_liked,
-        p_uid: this.post.p_uid
+        p_uid: this.post.p_uid,
+        total_likes: count
       });
     }
   }
@@ -201,6 +219,9 @@ export default class PostsListItem extends Vue {
 
     const { uid, post_liked } = res;
 
+    // get likes count
+    const count = await this.getLikesCount();
+
     // if post_liked was set to false in db
     if (!post_liked) {
       // change icon color to default
@@ -210,7 +231,8 @@ export default class PostsListItem extends Vue {
       await PostsModule.UPDATE_POSTS({
         like_uid: uid,
         post_liked,
-        p_uid: this.post.p_uid
+        p_uid: this.post.p_uid,
+        total_likes: count
       });
     }
   }
@@ -234,6 +256,9 @@ export default class PostsListItem extends Vue {
 
     const { uid, post_liked } = res;
 
+    // get likes count
+    const count = await this.getLikesCount();
+
     // if post_liked is true in the db
     if (post_liked) {
       // update the icon color
@@ -243,7 +268,8 @@ export default class PostsListItem extends Vue {
       await PostsModule.UPDATE_POSTS({
         like_uid: uid,
         post_liked,
-        p_uid: this.post.p_uid
+        p_uid: this.post.p_uid,
+        total_likes: count
       });
     }
   }
@@ -329,6 +355,12 @@ export default class PostsListItem extends Vue {
     &-buttons {
       font-size: 0.8rem;
     }
+  }
+
+  &__like-count {
+    font-size: 1rem;
+    color: grey;
+    margin-right: 0.5rem;
   }
 }
 </style>
