@@ -6,6 +6,7 @@
           id="photo"
           class="pa-2 posts-list-item__img"
           :src="imgSrc"
+          aspect-ratio="1.7"
         ></v-img>
       </v-card>
       <v-card
@@ -15,9 +16,14 @@
         <v-card-title class="mb-4 posts-list-item__title">{{
           post.post_title
         }}</v-card-title>
+
         <v-card-subtitle class="posts-list-item__subtitle">
-          {{ post.post_content }}
+          {{ post.post_subtitle }}
         </v-card-subtitle>
+
+        <v-card-text class="posts-list-item__content">
+          {{ content }}
+        </v-card-text>
 
         <div class="posts-list-item__actions mt-3">
           <div class="posts-list-item__actions-author">
@@ -25,7 +31,7 @@
           </div>
 
           <div class="posts-list-item__actions-date">
-            {{ post.post_date }}
+            {{ formatPostCreatedDate }}
           </div>
 
           <v-row
@@ -65,6 +71,7 @@ import { Component, Prop, Watch } from "vue-property-decorator";
 import { like, unlike, relike } from "@/api/likes";
 import { UsersModule } from "@/store/modules/users";
 import { PostsModule } from "@/store/modules/posts";
+import moment from "moment";
 
 @Component
 export default class PostsListItem extends Vue {
@@ -77,7 +84,7 @@ export default class PostsListItem extends Vue {
   };
 
   likeColor = "lighten-2";
-
+  content = "";
   /**
    * Load image from post
    */
@@ -100,12 +107,35 @@ export default class PostsListItem extends Vue {
   }
 
   /**
+   * Get content post length
+   */
+  get postLength() {
+    return this.post.post_content.length;
+  }
+
+  get formatPostCreatedDate() {
+    return moment(this.post.post_created_at).format("MMMM DD, YYYY");
+  }
+
+  /**
    * When DOM mounts check to see if post has been liked
    */
   mounted() {
+    this.trimPostContentLength();
     this.post.post_liked
       ? this.onUpdateIconColor(this.colors.liked)
       : this.onUpdateIconColor(this.colors.unliked);
+  }
+
+  /**
+   * If content length is too long, trim it and add `...` to end
+   */
+  trimPostContentLength() {
+    const len = this.postLength;
+    if (len > 1000) {
+      this.content += `${this.post.post_content.substring(0, 500)}...`;
+      return this.content;
+    }
   }
 
   /**
@@ -238,8 +268,23 @@ export default class PostsListItem extends Vue {
 .posts-list-item {
   width: 90% !important;
   margin: auto !important;
+
+  &__title {
+    font-size: 2rem !important;
+  }
+
+  &__subtitle {
+    font-size: 1.6rem !important;
+    color: map-get($colors, primary) !important;
+    font-style: italic;
+  }
+
   &__content {
     display: flex !important;
+    text-overflow: ellipsis !important;
+    font-size: 1.1rem !important;
+    color: map-get($colors, secondary) !important;
+    line-height: 1.4 !important;
   }
 
   &__container {
@@ -252,13 +297,8 @@ export default class PostsListItem extends Vue {
 
   &__description {
     width: 66%;
-    display: flex;
-    flex-direction: column;
-    align-content: stretch;
-  }
-
-  &__title {
-    font-size: 2rem !important;
+    display: grid !important;
+    grid-template-rows: 25% 10% auto 25%;
   }
 
   &__actions {
@@ -269,14 +309,15 @@ export default class PostsListItem extends Vue {
     align-items: center;
 
     &-author {
-      font-size: 0.9rem;
+      font-size: 1rem;
       font-weight: 300;
     }
 
     &-date {
-      font-size: 0.8rem;
+      font-size: 1rem;
       color: grey;
       margin-left: 1rem;
+      font-style: italic;
     }
 
     &-buttons {
