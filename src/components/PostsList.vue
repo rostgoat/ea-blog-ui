@@ -18,7 +18,7 @@ import { mapGetters } from "vuex";
 })
 export default class PostsList extends Vue {
   name = "PostsList";
-  posts = [];
+  posts: any[] = [];
 
   /**
    * Get posts either from state or from API

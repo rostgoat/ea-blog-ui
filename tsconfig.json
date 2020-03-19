@@ -25,7 +25,11 @@
       "dom",
       "dom.iterable",
       "scripthost"
-    ]
+    ],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/store/models/",
+  ]
   },
   "include": [
     "src/**/*.ts",

@@ -13,19 +13,19 @@
         class="posts-list-item__container posts-list-item__description"
       >
         <v-card-title class="mb-4 posts-list-item__title">{{
-          post.title
+          post.post_title
         }}</v-card-title>
         <v-card-subtitle class="posts-list-item__subtitle">
-          {{ post.content }}
+          {{ post.post_content }}
         </v-card-subtitle>
 
         <div class="posts-list-item__actions mt-3">
           <div class="posts-list-item__actions-author">
-            {{ post.author }}
+            {{ post.post_author }}
           </div>
 
           <div class="posts-list-item__actions-date">
-            {{ post.date }}
+            {{ post.post_date }}
           </div>
 
           <v-row
@@ -33,10 +33,25 @@
             justify="end"
             class="posts-list-item__actions-buttons"
           >
-            <v-icon class="mr-1">mdi-heart</v-icon>
-            <span class="subheading mr-2">256</span>
-            <v-icon class="mr-1">mdi-share-variant</v-icon>
-            <span class="subheading">45</span>
+            <v-btn
+              class="ma-2"
+              text
+              icon
+              :color="likeColor"
+              @click="onClickLikePost"
+            >
+              <v-icon>mdi-thumb-up</v-icon>
+            </v-btn>
+
+            <v-btn
+              class="ma-2"
+              text
+              icon
+              color="green lighten-2"
+              @click="onClickSharePost"
+            >
+              <v-icon class="mr-1">mdi-share-variant</v-icon>
+            </v-btn>
           </v-row>
         </div>
       </v-card>
@@ -46,18 +61,175 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, Watch } from "vue-property-decorator";
+import { like, unlike, relike } from "@/api/likes";
+import { UsersModule } from "@/store/modules/users";
+import { PostsModule } from "@/store/modules/posts";
 
 @Component
 export default class PostsListItem extends Vue {
   name = "PostsListItem";
   @Prop() post!: any;
 
+  colors = {
+    liked: "blue lighten-2",
+    unliked: "lighten-2"
+  };
+
+  likeColor = "lighten-2";
+
   /**
    * Load image from post
    */
   get imgSrc() {
-    return `${process.env.VUE_APP_BASE_URL}/${this.post.photo.title}`;
+    return `${process.env.VUE_APP_BASE_URL}/${this.post.photo_title}`;
+  }
+
+  /**
+   * Get user from state
+   */
+  get loggedInUser() {
+    return UsersModule.GET_USER;
+  }
+
+  /**
+   * Get status of post like
+   */
+  get likeStatus() {
+    return this.likeColor.includes("blue") ? true : false;
+  }
+
+  /**
+   * When DOM mounts check to see if post has been liked
+   */
+  mounted() {
+    this.post.post_liked
+      ? this.onUpdateIconColor(this.colors.liked)
+      : this.onUpdateIconColor(this.colors.unliked);
+  }
+
+  /**
+   * Event handler for liking, unliking and reliking a post
+   */
+  async onClickLikePost() {
+    // liking post for the first time
+    // post is NOT liked (false in db) AND does NOT have a uid AND icon color is grey
+    if (!this.likeStatus && !this.post.like_uid && !this.post.post_liked) {
+      await this.likePostForTheFirstTime();
+
+      // reliking post
+      // post is NOT liked (false in db) but has a uid and icon is grey
+    } else if (
+      !this.likeStatus &&
+      !!this.post.like_uid &&
+      !this.post.post_liked
+    ) {
+      await this.relikePost();
+
+      // unliking post
+      // post IS liked, icon is set to blue and post uid exist in state
+    } else if (this.likeStatus && this.post.like_uid && this.post.post_liked) {
+      await this.unlikePost();
+    }
+  }
+
+  /**
+   * Method creates a Like object in the database and flips `post_liked` prop to true
+   * Data is reflected in state thereafter
+   */
+  async likePost() {
+    const res = await like({
+      user_uid: this.loggedInUser.uid,
+      post_uid: this.post.p_uid
+    });
+
+    const { uid, post_liked } = res;
+
+    // if post_liked is true in the db
+    if (post_liked) {
+      // update the icon color
+      this.onUpdateIconColor(this.colors.liked);
+
+      // update the post object in state with like data
+      await PostsModule.UPDATE_POSTS({
+        like_uid: uid,
+        post_liked,
+        p_uid: this.post.p_uid
+      });
+    }
+  }
+
+  /**
+   * Method updates the Like object in the database and flips `post_liked` prop to false
+   * Data is reflected in state thereafter
+   */
+  async unlikePost() {
+    const res = await unlike({
+      uid: this.post.like_uid,
+      post_liked: this.post.post_liked
+    });
+
+    const { uid, post_liked } = res;
+
+    // if post_liked was set to false in db
+    if (!post_liked) {
+      // change icon color to default
+      this.onUpdateIconColor(this.colors.unliked);
+
+      // update the post object in state with like data
+      await PostsModule.UPDATE_POSTS({
+        like_uid: uid,
+        post_liked,
+        p_uid: this.post.p_uid
+      });
+    }
+  }
+
+  /**
+   * Method is only called when post has never been liked
+   * (like object does not exist in db and like_uid is null)
+   */
+  async likePostForTheFirstTime() {
+    await this.likePost();
+  }
+
+  /**
+   * Method exists to simply relike a post a flip `post_liked` to true
+   */
+  async relikePost() {
+    const res = await relike({
+      uid: this.post.like_uid,
+      post_liked: this.post.post_liked
+    });
+
+    const { uid, post_liked } = res;
+
+    // if post_liked is true in the db
+    if (post_liked) {
+      // update the icon color
+      this.onUpdateIconColor(this.colors.liked);
+
+      // update the post object in state with like data
+      await PostsModule.UPDATE_POSTS({
+        like_uid: uid,
+        post_liked,
+        p_uid: this.post.p_uid
+      });
+    }
+  }
+
+  /**
+   * Update like icon color
+   */
+  onUpdateIconColor(color: string) {
+    this.likeColor = color;
+  }
+
+  /**
+   * Event handler for sharing a post
+   */
+  onClickSharePost() {
+    console.log("shared post");
   }
 }
 </script>
