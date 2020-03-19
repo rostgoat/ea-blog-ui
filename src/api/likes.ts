@@ -1,7 +1,7 @@
 import request from "@/utils/request";
 import { LikesSubmit } from "@/store/models/likes.models";
 
-export const like = (data: LikesSubmit) => {
+export const like = (data: Partial<LikesSubmit>) => {
   return request({
     url: "/likes/like",
     method: "post",
@@ -9,7 +9,7 @@ export const like = (data: LikesSubmit) => {
   });
 };
 
-export const unlike = (data: LikesSubmit) => {
+export const unlike = (data: Partial<LikesSubmit>) => {
   return request({
     url: "/likes/unlike",
     method: "put",
@@ -17,10 +17,3 @@ export const unlike = (data: LikesSubmit) => {
   });
 };
 
-export const status = (data: LikesSubmit) => {
-  return request({
-    url: "/likes/status",
-    method: "get",
-    data
-  });
-};

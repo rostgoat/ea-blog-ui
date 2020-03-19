@@ -64,11 +64,17 @@ import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import { like, unlike } from "@/api/likes";
 import { UsersModule } from "@/store/modules/users";
+import { PostsModule } from "@/store/modules/posts";
 
 @Component
 export default class PostsListItem extends Vue {
   name = "PostsListItem";
   @Prop() post!: any;
+
+  colors = {
+    liked: "blue lighten-2",
+    unliked: "lighten-2"
+  };
 
   likeColor = "lighten-2";
 
@@ -76,7 +82,6 @@ export default class PostsListItem extends Vue {
    * Load image from post
    */
   get imgSrc() {
-    console.log("this.post", this.post);
     return `${process.env.VUE_APP_BASE_URL}/${this.post.photo_title}`;
   }
 
@@ -88,18 +93,61 @@ export default class PostsListItem extends Vue {
   }
 
   /**
-   * Event handler for liking a post
+   * Get status of post like
+   */
+  get likeStatus() {
+    return this.likeColor.includes("blue") ? true : false;
+  }
+
+  /**
+   * When DOM mounts check to see if post has been liked
+   */
+  mounted() {
+    this.post.post_liked
+      ? this.onUpdateIconColor(this.colors.liked)
+      : this.onUpdateIconColor(this.colors.unliked);
+  }
+
+  /**
+   * Event handler for liking and post
    */
   async onClickLikePost() {
-    const res = await like({
-      user_uid: this.loggedInUser.uid,
-      post_uid: this.post.p_uid
-    });
+    console.log("this.likeStatus", this.likeStatus);
+    console.log("this.post.like_uid", this.post.like_uid);
+    if (!this.likeStatus && !this.post.like_uid) {
+      const res = await like({
+        user_uid: this.loggedInUser.uid,
+        post_uid: this.post.p_uid
+      });
 
-    if (res.post_liked) {
-      this.onUpdateIconColor("blue lighten-2");
+      if (res.post_liked) {
+        this.onUpdateIconColor(this.colors.liked);
+        console.log("calling UPDATE_POSTS", res);
+        await PostsModule.UPDATE_POSTS({
+          like_uid: res.uid,
+          post_liked: res.post_liked
+        });
+      }
+    } else {
+      console.log("unliking");
+      console.log("uid", this.post.like_uid);
+      console.log("post_liked", this.post.post_liked);
+      const res = await unlike({
+        uid: this.post.like_uid,
+        post_liked: this.post.post_liked
+      });
+      console.log("res", res);
+      if (!res.post_liked) {
+        this.onUpdateIconColor(this.colors.unliked);
+      }
     }
-    console.log("res: ", res);
+  }
+
+  /**
+   * Update like icon color
+   */
+  onUpdateIconColor(color: string) {
+    this.likeColor = color;
   }
 
   /**
@@ -107,16 +155,6 @@ export default class PostsListItem extends Vue {
    */
   onClickSharePost() {
     console.log("shared post");
-  }
-
-  onUpdateIconColor(color: string) {
-    this.likeColor = color;
-  }
-
-  mounted() {
-    this.post.like_uid !== null
-      ? this.onUpdateIconColor("blue lighten-2")
-      : this.onUpdateIconColor("lighten-2");
   }
 }
 </script>

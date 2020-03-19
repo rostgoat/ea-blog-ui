@@ -18,7 +18,7 @@ import { mapGetters } from "vuex";
 })
 export default class PostsList extends Vue {
   name = "PostsList";
-  posts = [];
+  posts: any[] = [];
 
   /**
    * Get posts either from state or from API
@@ -38,7 +38,6 @@ export default class PostsList extends Vue {
     try {
       await PostsModule.GET_ALL_POSTS();
       this.posts = PostsModule.GET_POSTS;
-      console.log("this.posts", this.posts);
     } catch (error) {
       throw new Error(error);
     }
