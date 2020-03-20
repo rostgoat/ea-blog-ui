@@ -19,3 +19,10 @@ export const register = (data: UserSubmitRegister) => {
     data
   });
 };
+
+export const getUsersLike = () => {
+  return request({
+    url: `/users/likes`,
+    method: "get"
+  });
+};

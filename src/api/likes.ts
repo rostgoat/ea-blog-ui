@@ -25,9 +25,10 @@ export const relike = (data: Partial<LikesSubmit>) => {
   });
 };
 
-export const likesCount = () => {
+export const likesCount = (params: Partial<LikesSubmit>) => {
   return request({
     url: "/likes/likes",
     method: "get",
+    params
   });
 };

@@ -38,6 +38,7 @@ export default class PostsList extends Vue {
     try {
       await PostsModule.GET_ALL_POSTS();
       this.posts = PostsModule.GET_POSTS;
+      console.log("this.posts", this.posts);
     } catch (error) {
       throw new Error(error);
     }

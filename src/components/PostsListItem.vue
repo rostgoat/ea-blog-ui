@@ -63,6 +63,7 @@
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 import { like, unlike, relike, likesCount } from "@/api/likes";
+import { getUsersLike } from "@/api/users";
 import { UsersModule } from "@/store/modules/users";
 import { PostsModule } from "@/store/modules/posts";
 import moment from "moment";
@@ -140,7 +141,7 @@ export default class PostsListItem extends Vue {
   }
 
   async getLikesCount() {
-    return await likesCount();
+    return await likesCount({ post_uid: this.post.p_uid });
   }
   /**
    * Event handler for liking, unliking and reliking a post
@@ -149,7 +150,7 @@ export default class PostsListItem extends Vue {
     // liking post for the first time
     // post is NOT liked (false in db) AND does NOT have a uid AND icon color is grey
     if (!this.likeStatus && !this.post.like_uid && !this.post.post_liked) {
-      await this.likePostForTheFirstTime();
+      await this.postLikeAction("like");
 
       // reliking post
       // post is NOT liked (false in db) but has a uid and icon is grey
@@ -166,14 +167,12 @@ export default class PostsListItem extends Vue {
       await this.postLikeAction("unlike");
     }
     this.count = this.post.total_likes;
+    await this.hasUserLikedPostBefore();
   }
 
-  /**
-   * Method is only called when post has never been liked
-   * (like object does not exist in db and like_uid is null)
-   */
-  async likePostForTheFirstTime() {
-    await this.postLikeAction("like");
+  async hasUserLikedPostBefore() {
+    const res = await getUsersLike();
+    console.log("res", res);
   }
 
   /**
@@ -186,22 +185,20 @@ export default class PostsListItem extends Vue {
       post_liked: this.post.post_liked
     };
 
+    // Method creates a Like object in the database and flips `post_liked` prop to true
     if (action === "like") {
-      /**
-       * Method creates a Like object in the database and flips
-       * `post_liked` prop to true
-       */
-      res = await like(data);
+      const newLikeData = {
+        user_uid: this.loggedInUser.uid,
+        post_uid: this.post.p_uid
+      };
+
+      res = await like(newLikeData);
+      // Method updates the Like object in the database and flips `post_liked` prop to false
     } else if (action === "unlike") {
-      /**
-       * Method updates the Like object in the database and flips
-       * `post_liked` prop to false
-       */
       res = await unlike(data);
+
+      // Method exists to simply relike a post a flip `post_liked` to true
     } else if (action === "relike") {
-      /**
-       * Method exists to simply relike a post a flip `post_liked` to true
-       */
       res = await relike(data);
     }
 
