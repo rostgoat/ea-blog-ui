@@ -62,8 +62,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
-import { like, unlike, relike, likesCount, getAllPostLikes } from "@/api/likes";
-import { getUsersLike } from "@/api/users";
+import { like, unlike, relike, likesCount } from "@/api/likes";
 import { UsersModule } from "@/store/modules/users";
 import { PostsModule } from "@/store/modules/posts";
 import moment from "moment";
@@ -155,11 +154,6 @@ export default class PostsListItem extends Vue {
     });
   }
 
-  async hasUserLikedPostBefore() {
-    const res = await getUsersLike();
-    console.log("res", res);
-  }
-
   /**
    * Like / unlike / relike a post
    */
@@ -189,14 +183,17 @@ export default class PostsListItem extends Vue {
     } else if (action === "relike") {
       res = await relike(data);
     }
+
+    // assing post_uid as key to modify like status in state
     const out: any = {};
     out[this.post.p_uid] = res;
 
+    // update the post object in state with 'like' data
+    await PostsModule.UPDATE_POSTS(out);
+
     // get likes count
     const count = await this.getLikesCount();
-
-    // update the post object in state with 'like' data
-    // await PostsModule.UPDATE_POSTS(out);
+    console.log("count", count);
   }
 }
 </script>

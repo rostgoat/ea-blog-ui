@@ -30,10 +30,18 @@ class Posts extends VuexModule {
 
   @Mutation
   private [SET_LIKE_PROPS](data: any) {
+
     this.posts.forEach((post: any) => {
       if (data[post.p_uid]) {
-        const newLikes = [...post.likes, data[post.p_uid]]
+        console.log('BEFORE post', post)
+        const newLikes = [...post.likes]
+        newLikes.forEach(like => {
+          if (like.l_uid === data[post.p_uid].uid) {
+            like.post_liked = data[post.p_uid].post_liked;
+          }
+        })
         post.likes = Object.assign(post.likes, newLikes)
+        console.log('AFTER post', post)
       }
     });
   }
