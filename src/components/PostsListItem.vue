@@ -174,7 +174,6 @@ export default class PostsListItem extends Vue {
       };
 
       res = await like(newLikeData);
-      console.log("res", res);
       // Method updates the Like object in the database and flips `post_liked` prop to false
     } else if (action === "unlike") {
       res = await unlike(data);
@@ -184,8 +183,6 @@ export default class PostsListItem extends Vue {
       res = await relike(data);
     }
     const out: any = {};
-    const { uid, post_liked, user } = res;
-
     out[this.post.p_uid] = res;
 
     // get likes count
