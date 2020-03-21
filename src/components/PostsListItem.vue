@@ -130,14 +130,15 @@ export default class PostsListItem extends Vue {
    * Event handler for liking, unliking and reliking a post
    */
   async onClickLikePost() {
+    // liking post for the first time
     this.post.likes.forEach(async (like: any) => {
       if (like.user_uid !== this.loggedInUser.uid) {
-        // liking post for the first time
         // post is NOT liked (false in db) AND does NOT have a uid
         await this.postLikeAction("like", like);
       }
     });
 
+    // unlike post
     this.post.likes.forEach(async (like: any) => {
       if (like.user_uid === this.loggedInUser.uid && like.post_liked) {
         // post IS liked AND post uid exist in state
@@ -145,11 +146,13 @@ export default class PostsListItem extends Vue {
       }
     });
 
-    // // reliking post
-    // // post is NOT liked (false in db) but has a uid and icon is grey
-    // if (!!this.post.like_uid && !this.post.post_liked) {
-    //   await this.postLikeAction("relike");
-    // }
+    // relike post
+    this.post.likes.forEach(async (like: any) => {
+      if (like.user_uid === this.loggedInUser.uid && !like.post_liked) {
+        // post is NOT liked (false in db) but has a uid
+        await this.postLikeAction("relike", like);
+      }
+    });
   }
 
   async hasUserLikedPostBefore() {
