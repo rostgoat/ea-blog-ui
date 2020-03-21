@@ -130,25 +130,26 @@ export default class PostsListItem extends Vue {
    * Event handler for liking, unliking and reliking a post
    */
   async onClickLikePost() {
-    // console.log("this.post.like.user_uid", this.post.like.user_uid);
-    console.log("this.loggedInUser.uid", this.loggedInUser.uid);
-    await this.postLikeAction("like");
-    // liking post for the first time
-    // post is NOT liked (false in db) AND does NOT have a uid AND icon color is grey
-    // if (!this.post.like.user_uid) {
-    //   await this.postLikeAction("like");
+    this.post.likes.forEach(async (like: any) => {
+      if (like.user_uid !== this.loggedInUser.uid) {
+        // liking post for the first time
+        // post is NOT liked (false in db) AND does NOT have a uid
+        await this.postLikeAction("like", like);
+      }
+    });
 
-    //   // reliking post
-    //   // post is NOT liked (false in db) but has a uid and icon is grey
-    // } else if (!!this.post.like_uid && !this.post.post_liked) {
+    this.post.likes.forEach(async (like: any) => {
+      if (like.user_uid === this.loggedInUser.uid && like.post_liked) {
+        // post IS liked AND post uid exist in state
+        await this.postLikeAction("unlike", like);
+      }
+    });
+
+    // // reliking post
+    // // post is NOT liked (false in db) but has a uid and icon is grey
+    // if (!!this.post.like_uid && !this.post.post_liked) {
     //   await this.postLikeAction("relike");
-
-    //   // unliking post
-    //   // post IS liked, icon is set to blue and post uid exist in state
-    // } else if (this.post.like_uid && this.post.post_liked) {
-    //   await this.postLikeAction("unlike");
     // }
-    // this.count = this.post.total_likes;
   }
 
   async hasUserLikedPostBefore() {
@@ -159,18 +160,21 @@ export default class PostsListItem extends Vue {
   /**
    * Like / unlike / relike a post
    */
-  async postLikeAction(action: string) {
+  async postLikeAction(action: string, args: any) {
     let res;
+
+    const { l_uid, post_liked, post_uid, user_uid } = args;
+
     const data = {
-      uid: this.post.like_uid,
-      post_liked: this.post.post_liked
+      uid: l_uid,
+      post_liked: post_liked
     };
 
     // Method creates a Like object in the database and flips `post_liked` prop to true
     if (action === "like") {
       const newLikeData = {
         user_uid: this.loggedInUser.uid,
-        post_uid: this.post.p_uid
+        post_uid
       };
 
       res = await like(newLikeData);
@@ -189,7 +193,7 @@ export default class PostsListItem extends Vue {
     const count = await this.getLikesCount();
 
     // update the post object in state with 'like' data
-    await PostsModule.UPDATE_POSTS(out);
+    // await PostsModule.UPDATE_POSTS(out);
   }
 }
 </script>
