@@ -32,3 +32,11 @@ export const likesCount = (params: Partial<LikesSubmit>) => {
     params
   });
 };
+
+export const getAllPostLikes = () => {
+  return request({
+    url: "/likes/post_likes",
+    method: "get",
+  });
+};
+

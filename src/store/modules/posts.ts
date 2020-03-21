@@ -31,18 +31,24 @@ class Posts extends VuexModule {
   @Mutation
   private [SET_LIKE_PROPS](data: any) {
     this.posts.forEach((post: any) => {
-      // runs when like data in posts is null (updating likes for the first time in posts)
-      if (
-        post.like_uid === null &&
-        post.post_liked === null &&
-        post.p_uid === data.p_uid
-      ) {
-        post = Object.assign(post, data);
-
-        // when posts already had like data but only status needs an update
-      } else if (post.like_uid && post.p_uid === data.p_uid) {
-        post = Object.assign(post, data);
+      if (data[post.p_uid]) {
+        const likes = []
+        likes.push(data[post.p_uid])
+        post = Object.assign(post, {likes})
+        console.log('post', post)
       }
+      // // runs when like data in posts is null (updating likes for the first time in posts)
+      // if (
+      //   post.like_uid === null &&
+      //   post.post_liked === null &&
+      //   post.p_uid === data.p_uid
+      // ) {
+      //   post = Object.assign(post, data);
+
+      //   // when posts already had like data but only status needs an update
+      // } else if (post.like_uid && post.p_uid === data.p_uid) {
+      //   post = Object.assign(post, data);
+      // } 
     });
   }
 
@@ -67,6 +73,7 @@ class Posts extends VuexModule {
   get [GET_POSTS]() {
     return this.posts || [];
   }
+ 
 }
 
 export const PostsModule = getModule(Posts);

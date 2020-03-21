@@ -43,7 +43,7 @@
               class="ma-2"
               text
               icon
-              :color="likeColor"
+              color="blue lighten-2"
               @click="onClickLikePost"
             >
               <v-icon>mdi-thumb-up</v-icon>
@@ -62,7 +62,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
-import { like, unlike, relike, likesCount } from "@/api/likes";
+import { like, unlike, relike, likesCount, getAllPostLikes } from "@/api/likes";
 import { getUsersLike } from "@/api/users";
 import { UsersModule } from "@/store/modules/users";
 import { PostsModule } from "@/store/modules/posts";
@@ -73,12 +73,6 @@ export default class PostsListItem extends Vue {
   name = "PostsListItem";
   @Prop() post!: any;
 
-  colors = {
-    liked: "blue lighten-2",
-    unliked: "lighten-2"
-  };
-
-  likeColor = "lighten-2";
   content = "";
   count: number | Promise<any> = 0;
 
@@ -94,13 +88,6 @@ export default class PostsListItem extends Vue {
    */
   get loggedInUser() {
     return UsersModule.GET_USER;
-  }
-
-  /**
-   * Get status of post like
-   */
-  get likeStatus() {
-    return this.likeColor.includes("blue") ? true : false;
   }
 
   /**
@@ -122,11 +109,7 @@ export default class PostsListItem extends Vue {
    */
   async mounted() {
     this.count = await this.getLikesCount();
-    console.log("this.count", this.count);
     this.trimPostContentLength();
-    this.post.post_liked
-      ? this.onUpdateIconColor(this.colors.liked)
-      : this.onUpdateIconColor(this.colors.unliked);
   }
 
   /**
@@ -147,27 +130,25 @@ export default class PostsListItem extends Vue {
    * Event handler for liking, unliking and reliking a post
    */
   async onClickLikePost() {
+    // console.log("this.post.like.user_uid", this.post.like.user_uid);
+    console.log("this.loggedInUser.uid", this.loggedInUser.uid);
+    await this.postLikeAction("like");
     // liking post for the first time
     // post is NOT liked (false in db) AND does NOT have a uid AND icon color is grey
-    if (!this.likeStatus && !this.post.like_uid && !this.post.post_liked) {
-      await this.postLikeAction("like");
+    // if (!this.post.like.user_uid) {
+    //   await this.postLikeAction("like");
 
-      // reliking post
-      // post is NOT liked (false in db) but has a uid and icon is grey
-    } else if (
-      !this.likeStatus &&
-      !!this.post.like_uid &&
-      !this.post.post_liked
-    ) {
-      await this.postLikeAction("relike");
+    //   // reliking post
+    //   // post is NOT liked (false in db) but has a uid and icon is grey
+    // } else if (!!this.post.like_uid && !this.post.post_liked) {
+    //   await this.postLikeAction("relike");
 
-      // unliking post
-      // post IS liked, icon is set to blue and post uid exist in state
-    } else if (this.likeStatus && this.post.like_uid && this.post.post_liked) {
-      await this.postLikeAction("unlike");
-    }
-    this.count = this.post.total_likes;
-    await this.hasUserLikedPostBefore();
+    //   // unliking post
+    //   // post IS liked, icon is set to blue and post uid exist in state
+    // } else if (this.post.like_uid && this.post.post_liked) {
+    //   await this.postLikeAction("unlike");
+    // }
+    // this.count = this.post.total_likes;
   }
 
   async hasUserLikedPostBefore() {
@@ -193,6 +174,7 @@ export default class PostsListItem extends Vue {
       };
 
       res = await like(newLikeData);
+      console.log("res", res);
       // Method updates the Like object in the database and flips `post_liked` prop to false
     } else if (action === "unlike") {
       res = await unlike(data);
@@ -201,33 +183,16 @@ export default class PostsListItem extends Vue {
     } else if (action === "relike") {
       res = await relike(data);
     }
+    const out: any = {};
+    const { uid, post_liked, user } = res;
 
-    const { uid, post_liked } = res;
+    out[this.post.p_uid] = res;
 
     // get likes count
     const count = await this.getLikesCount();
 
-    // update the icon color
-    if (post_liked) {
-      this.onUpdateIconColor(this.colors.liked);
-    } else if (!post_liked) {
-      this.onUpdateIconColor(this.colors.unliked);
-    }
-
     // update the post object in state with 'like' data
-    await PostsModule.UPDATE_POSTS({
-      like_uid: uid,
-      post_liked,
-      p_uid: this.post.p_uid,
-      total_likes: count
-    });
-  }
-
-  /**
-   * Update like icon color
-   */
-  onUpdateIconColor(color: string) {
-    this.likeColor = color;
+    await PostsModule.UPDATE_POSTS(out);
   }
 }
 </script>
