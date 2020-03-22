@@ -10,8 +10,13 @@ import { PostSubmit } from "../models/posts.models";
 import { create, get } from "@/api/posts";
 import { setToken } from "@/utils/cookies";
 import { GET_POSTS } from "../types/getters";
-import { GET_ALL_POSTS, CREATE_POST, UPDATE_POSTS } from "../types/actions";
-import { SET_POSTS, SET_LIKE_PROPS } from "../types/mutations";
+import {
+  GET_ALL_POSTS,
+  CREATE_POST,
+  UPDATE_POSTS,
+  CREATE_LIKES
+} from "../types/actions";
+import { SET_POSTS, SET_LIKE_PROPS, SET_LIKES } from "../types/mutations";
 
 @Module({
   namespaced: true,
@@ -29,20 +34,46 @@ class Posts extends VuexModule {
   }
 
   @Mutation
-  private [SET_LIKE_PROPS](data: any) {
+  private [SET_LIKES](data: any) {
+    const { post_uid } = data;
+    this.posts.forEach((post: any) => {
+      if (post.p_uid === post_uid) {
+        const tempPost = post;
+        tempPost.likes = [];
+        post = Object.assign(post, tempPost);
+      }
+    });
+  }
 
+  @Mutation
+  private [SET_LIKE_PROPS](data: any) {
     this.posts.forEach((post: any) => {
       if (data[post.p_uid]) {
-        console.log('BEFORE post', post)
-        const newLikes = [...post.likes]
-        newLikes.forEach(like => {
-          if (like.l_uid === data[post.p_uid].uid) {
-            like.post_liked = data[post.p_uid].post_liked;
-          }
-        })
-        post.likes = Object.assign(post.likes, newLikes)
-        console.log('AFTER post', post)
+        // copy the likes array into a temp variable
+        const newLikes = [...post.likes];
+
+        // post have never been liked
+        if (newLikes.length === 0) {
+          const newPost = {
+            post_liked: data[post.p_uid].post_liked,
+            l_uid: data[post.p_uid].uid,
+            user_uid: data[post.p_uid].user.uid,
+            post_uid: post.p_uid
+          };
+          newLikes.push(newPost);
+          // post has been liked before (need to update the specific like in the array)
+        } else {
+          newLikes.forEach(like => {
+            if (like.l_uid === data[post.p_uid].uid) {
+              like.post_liked = data[post.p_uid].post_liked;
+            }
+          });
+        }
+
+        post.likes = Object.assign(post.likes, newLikes);
       }
+
+      console.log('this.posts vuex after', this.posts)
     });
   }
 
@@ -62,6 +93,11 @@ class Posts extends VuexModule {
   @Action({ rawError: true })
   async [UPDATE_POSTS](data: any) {
     this.SET_LIKE_PROPS(data);
+  }
+
+  @Action({ rawError: true })
+  async [CREATE_LIKES](data: any) {
+    this.SET_LIKES(data);
   }
 
   get [GET_POSTS]() {

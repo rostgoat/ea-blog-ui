@@ -2,7 +2,12 @@
  * Posts
  */
 export const SET_POSTS = "SET_POSTS";
+
+/**
+ * Likes
+ */
 export const SET_LIKE_PROPS = "SET_LIKE_PROPS";
+export const SET_LIKES = "SET_LIKES";
 
 /**
  * Users

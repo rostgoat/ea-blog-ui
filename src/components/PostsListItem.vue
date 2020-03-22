@@ -122,36 +122,57 @@ export default class PostsListItem extends Vue {
     }
   }
 
+  /**
+   * Number of likes from all users on a post
+   */
   async getLikesCount() {
     return await likesCount({ post_uid: this.post.p_uid });
   }
+
   /**
    * Event handler for liking, unliking and reliking a post
    */
   async onClickLikePost() {
-    // liking post for the first time
-    this.post.likes.forEach(async (like: any) => {
-      if (like.user_uid !== this.loggedInUser.uid) {
-        // post is NOT liked (false in db) AND does NOT have a uid
-        await this.postLikeAction("like", like);
-      }
-    });
+    // check if `likes` prop exists on post - if not then create it
+    if (typeof this.post["likes"] === "undefined") {
+      await PostsModule.CREATE_LIKES({ post_uid: this.post.p_uid });
+    }
 
-    // unlike post
-    this.post.likes.forEach(async (like: any) => {
-      if (like.user_uid === this.loggedInUser.uid && like.post_liked) {
-        // post IS liked AND post uid exist in state
-        await this.postLikeAction("unlike", like);
-      }
-    });
+    // Case 1: no user has ever liked this post
+    if (this.post.likes.length === 0) {
+      // post is NOT liked (false in db) AND does NOT have a uid
+      await this.postLikeAction("like", {
+        post_uid: this.post.p_uid
+      });
 
-    // relike post
-    this.post.likes.forEach(async (like: any) => {
-      if (like.user_uid === this.loggedInUser.uid && !like.post_liked) {
-        // post is NOT liked (false in db) but has a uid
-        await this.postLikeAction("relike", like);
+      // current user or another user has liked this post before
+    } else if (this.post.likes.length > 0) {
+      // case 2: at least 1 user has liked this post BUT NOT the currently logged in user
+      const previouslyLikedByAnotherUser = this.post.likes.some(
+        (like: any) => like.user_uid !== this.loggedInUser.uid
+      );
+
+      // case 3: current user already likes this post but wants to unlike it
+      const previouslyLikedByCurrentUser = this.post.likes.filter(
+        (like: any) =>
+          like.user_uid === this.loggedInUser.uid && like.post_liked
+      );
+
+      // case 4: current user has unliked this post but wants to relike it
+      const previouslyUnLikedByCurrentUser = this.post.likes.filter(
+        (like: any) =>
+          like.user_uid === this.loggedInUser.uid && !like.post_liked
+      );
+
+      if (previouslyLikedByAnotherUser) {
+        const newPost = { post_uid: this.post.p_uid };
+        await this.postLikeAction("like", newPost);
+      } else if (previouslyLikedByCurrentUser.length > 0) {
+        await this.postLikeAction("unlike", previouslyLikedByCurrentUser[0]);
+      } else if (previouslyUnLikedByCurrentUser.length > 0) {
+        await this.postLikeAction("relike", previouslyUnLikedByCurrentUser[0]);
       }
-    });
+    }
   }
 
   /**
@@ -160,7 +181,9 @@ export default class PostsListItem extends Vue {
   async postLikeAction(action: string, args: any) {
     let res;
 
-    const { l_uid, post_liked, post_uid, user_uid } = args;
+    console.log("args", args);
+
+    const { l_uid, post_liked, post_uid } = args;
 
     const data = {
       uid: l_uid,
@@ -183,7 +206,6 @@ export default class PostsListItem extends Vue {
     } else if (action === "relike") {
       res = await relike(data);
     }
-
     // assing post_uid as key to modify like status in state
     const out: any = {};
     out[this.post.p_uid] = res;
@@ -192,8 +214,7 @@ export default class PostsListItem extends Vue {
     await PostsModule.UPDATE_POSTS(out);
 
     // get likes count
-    const count = await this.getLikesCount();
-    console.log("count", count);
+    this.count = await this.getLikesCount();
   }
 }
 </script>
