@@ -182,10 +182,13 @@ export default class PostsListItem extends Vue {
    * Like / unlike / relike a post
    */
   async postLikeAction(action: string, args: any) {
+    // api response object
     let res;
 
+    // pased in args
     const { l_uid, post_liked, post_uid } = args;
 
+    // default api call params
     const data = {
       uid: l_uid,
       post_liked: post_liked
@@ -207,6 +210,7 @@ export default class PostsListItem extends Vue {
     } else if (action === "relike") {
       res = await relike(data);
     }
+
     // assing post_uid as key to modify like status in state
     const out: any = {};
     out[this.post.p_uid] = res;
