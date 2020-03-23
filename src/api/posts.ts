@@ -30,3 +30,12 @@ export const get = () => {
     method: "get"
   });
 };
+
+export const getOne = (params: any) => {
+  console.log('params', params)
+  return request({
+    url: `/posts/findOne`,
+    method: "get",
+    params
+  });
+};
