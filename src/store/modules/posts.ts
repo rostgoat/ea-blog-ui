@@ -48,32 +48,45 @@ class Posts extends VuexModule {
   @Mutation
   private [SET_LIKE_PROPS](data: any) {
     this.posts.forEach((post: any) => {
-      if (data[post.p_uid]) {
+      const currentPost = data[post.p_uid];
+      
+      if (currentPost) {
         // copy the likes array into a temp variable
-        const newLikes = [...post.likes];
+        const newLikes = post.likes;
 
         // post have never been liked
         if (newLikes.length === 0) {
           const newPost = {
-            post_liked: data[post.p_uid].post_liked,
-            l_uid: data[post.p_uid].uid,
-            user_uid: data[post.p_uid].user.uid,
-            post_uid: post.p_uid
+            l_uid: currentPost.uid,
+            post_liked: currentPost.post_liked,
+            post_uid: post.p_uid,
+            user_uid: currentPost.user.uid,
           };
           newLikes.push(newPost);
           // post has been liked before (need to update the specific like in the array)
         } else {
-          newLikes.forEach(like => {
-            if (like.l_uid === data[post.p_uid].uid) {
-              like.post_liked = data[post.p_uid].post_liked;
-            }
-          });
+          // post has likes
+          const likeExists = newLikes.some((like: any) => like.l_uid === currentPost.uid);
+          // current user has never liked this post
+          if (!likeExists) {
+            const newLike = {
+              l_uid: currentPost.uid,
+              post_liked: currentPost.post_liked,
+              post_uid: post.p_uid,
+              user_uid: currentPost.user.uid,
+            };
+            newLikes.push(newLike);
+          } else {
+            // updating existing like
+            newLikes.forEach((like: any) => {
+              if (like.l_uid === currentPost.uid) {
+                like.post_liked = currentPost.post_liked;
+              }
+            });
+          }
         }
-
         post.likes = Object.assign(post.likes, newLikes);
       }
-
-      console.log('this.posts vuex after', this.posts)
     });
   }
 

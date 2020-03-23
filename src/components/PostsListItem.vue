@@ -46,7 +46,7 @@
               color="blue lighten-2"
               @click="onClickLikePost"
             >
-              <v-icon>mdi-thumb-up</v-icon>
+              <v-icon :disabled="!loggedInUser.uid">mdi-thumb-up</v-icon>
             </v-btn>
 
             <div class="posts-list-item__like-count">
@@ -66,6 +66,7 @@ import { like, unlike, relike, likesCount } from "@/api/likes";
 import { UsersModule } from "@/store/modules/users";
 import { PostsModule } from "@/store/modules/posts";
 import moment from "moment";
+import * as _ from "lodash";
 
 @Component
 export default class PostsListItem extends Vue {
@@ -134,11 +135,11 @@ export default class PostsListItem extends Vue {
    */
   async onClickLikePost() {
     // check if `likes` prop exists on post - if not then create it
-    if (typeof this.post["likes"] === "undefined") {
+    if (!_.has(this.post, "likes")) {
       await PostsModule.CREATE_LIKES({ post_uid: this.post.p_uid });
     }
 
-    // Case 1: no user has ever liked this post
+    //Case 1: no user has ever liked this post
     if (this.post.likes.length === 0) {
       // post is NOT liked (false in db) AND does NOT have a uid
       await this.postLikeAction("like", {
@@ -148,8 +149,10 @@ export default class PostsListItem extends Vue {
       // current user or another user has liked this post before
     } else if (this.post.likes.length > 0) {
       // case 2: at least 1 user has liked this post BUT NOT the currently logged in user
-      const previouslyLikedByAnotherUser = this.post.likes.some(
-        (like: any) => like.user_uid !== this.loggedInUser.uid
+      const previouslyLikedByAnotherUser = this.post.likes.every(
+        (like: any) => {
+          return like.user_uid !== this.loggedInUser.uid;
+        }
       );
 
       // case 3: current user already likes this post but wants to unlike it
@@ -165,8 +168,8 @@ export default class PostsListItem extends Vue {
       );
 
       if (previouslyLikedByAnotherUser) {
-        const newPost = { post_uid: this.post.p_uid };
-        await this.postLikeAction("like", newPost);
+        const newLike = { post_uid: this.post.p_uid };
+        await this.postLikeAction("like", newLike);
       } else if (previouslyLikedByCurrentUser.length > 0) {
         await this.postLikeAction("unlike", previouslyLikedByCurrentUser[0]);
       } else if (previouslyUnLikedByCurrentUser.length > 0) {
@@ -180,8 +183,6 @@ export default class PostsListItem extends Vue {
    */
   async postLikeAction(action: string, args: any) {
     let res;
-
-    console.log("args", args);
 
     const { l_uid, post_liked, post_uid } = args;
 

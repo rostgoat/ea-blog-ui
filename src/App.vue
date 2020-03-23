@@ -167,8 +167,8 @@ export default class App extends Vue {
    */
   onClickLogout() {
     UsersModule.LOGOUT_USER();
-    if (this.$route.name !== "Home") {
-      this.$router.push("/");
+    if (this.$route.name !== "login") {
+      this.$router.push("/login");
     }
   }
 
