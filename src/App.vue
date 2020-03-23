@@ -15,7 +15,7 @@
       </v-app-bar-nav-icon>
       <v-toolbar-title>
         <router-link to="/" tag="span" style="cursor: pointer">
-          EA Games Blog
+          <v-img :src="imgSrc"></v-img>
         </router-link>
       </v-toolbar-title>
       <v-spacer></v-spacer>
@@ -24,6 +24,7 @@
           v-for="item in items"
           :key="item.title"
           @click="onClickMenuItem(item.title)"
+          class="menu-icon"
         >
           <v-icon left dark>{{ item.icon }}</v-icon>
           {{ item.title }}
@@ -83,6 +84,13 @@ export default class App extends Vue {
    */
   get loggedInUser() {
     return UsersModule.GET_USER;
+  }
+
+  /**
+   * Load image from post
+   */
+  get imgSrc() {
+    return require("../public/logo_gb.png");
   }
 
   mounted() {
@@ -203,5 +211,9 @@ export default class App extends Vue {
 
 .nav-user {
   font-size: 1rem;
+}
+
+.menu-icon {
+  font-size: 1.35rem !important;
 }
 </style>

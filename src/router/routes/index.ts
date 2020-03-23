@@ -44,5 +44,13 @@ export default [
     meta: {
       requiresAuth: true
     }
+  },
+  {
+    path: "/view/:id",
+    name: "view-post",
+    component: () => import('@/views/ViewPost.vue'),
+    meta: {
+      requiresAuth: true
+    }
   }
 ];
