@@ -10,8 +10,13 @@ import { PostSubmit } from "../models/posts.models";
 import { create, get } from "@/api/posts";
 import { setToken } from "@/utils/cookies";
 import { GET_POSTS } from "../types/getters";
-import { GET_ALL_POSTS, CREATE_POST, UPDATE_POSTS } from "../types/actions";
-import { SET_POSTS, SET_LIKE_PROPS } from "../types/mutations";
+import {
+  GET_ALL_POSTS,
+  CREATE_POST,
+  UPDATE_POSTS,
+  CREATE_LIKES
+} from "../types/actions";
+import { SET_POSTS, SET_LIKE_PROPS, SET_LIKES } from "../types/mutations";
 
 @Module({
   namespaced: true,
@@ -29,19 +34,58 @@ class Posts extends VuexModule {
   }
 
   @Mutation
+  private [SET_LIKES](data: any) {
+    const { post_uid } = data;
+    this.posts.forEach((post: any) => {
+      if (post.p_uid === post_uid) {
+        const tempPost = post;
+        tempPost.likes = [];
+        post = Object.assign(post, tempPost);
+      }
+    });
+  }
+
+  @Mutation
   private [SET_LIKE_PROPS](data: any) {
     this.posts.forEach((post: any) => {
-      // runs when like data in posts is null (updating likes for the first time in posts)
-      if (
-        post.like_uid === null &&
-        post.post_liked === null &&
-        post.p_uid === data.p_uid
-      ) {
-        post = Object.assign(post, data);
+      const currentPost = data[post.p_uid];
+      
+      if (currentPost) {
+        // copy the likes array into a temp variable
+        const newLikes = post.likes;
 
-        // when posts already had like data but only status needs an update
-      } else if (post.like_uid && post.p_uid === data.p_uid) {
-        post = Object.assign(post, data);
+        // post have never been liked
+        if (newLikes.length === 0) {
+          const newPost = {
+            l_uid: currentPost.uid,
+            post_liked: currentPost.post_liked,
+            post_uid: post.p_uid,
+            user_uid: currentPost.user.uid,
+          };
+          newLikes.push(newPost);
+          // post has been liked before (need to update the specific like in the array)
+        } else {
+          // post has likes
+          const likeExists = newLikes.some((like: any) => like.l_uid === currentPost.uid);
+          // current user has never liked this post
+          if (!likeExists) {
+            const newLike = {
+              l_uid: currentPost.uid,
+              post_liked: currentPost.post_liked,
+              post_uid: post.p_uid,
+              user_uid: currentPost.user.uid,
+            };
+            newLikes.push(newLike);
+          } else {
+            // updating existing like
+            newLikes.forEach((like: any) => {
+              if (like.l_uid === currentPost.uid) {
+                like.post_liked = currentPost.post_liked;
+              }
+            });
+          }
+        }
+        post.likes = Object.assign(post.likes, newLikes);
       }
     });
   }
@@ -62,6 +106,11 @@ class Posts extends VuexModule {
   @Action({ rawError: true })
   async [UPDATE_POSTS](data: any) {
     this.SET_LIKE_PROPS(data);
+  }
+
+  @Action({ rawError: true })
+  async [CREATE_LIKES](data: any) {
+    this.SET_LIKES(data);
   }
 
   get [GET_POSTS]() {
