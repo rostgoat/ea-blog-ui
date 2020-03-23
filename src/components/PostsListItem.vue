@@ -1,7 +1,11 @@
 <template>
   <v-card class="mx-auto mt-5 posts-list-item" outlined>
-    <v-container class="posts-list-item__content" @click="onClickPost">
-      <v-card flat class="posts-list-item__container posts-list-item__image">
+    <v-container class="posts-list-item__content">
+      <v-card
+        flat
+        class="posts-list-item__container posts-list-item__image"
+        @click="onClickPost"
+      >
         <v-img
           id="photo"
           class="pa-2 posts-list-item__img"
@@ -13,15 +17,15 @@
         flat
         class="posts-list-item__container posts-list-item__description"
       >
-        <v-card-title class="mb-4 posts-list-item__title">{{
-          post.post_title
-        }}</v-card-title>
+        <v-card-title class="mb-4 posts-list-item__title" @click="onClickPost">
+          <h3>{{ post.post_title }}</h3></v-card-title
+        >
 
-        <v-card-subtitle class="posts-list-item__subtitle">
-          {{ post.post_subtitle }}
+        <v-card-subtitle class="posts-list-item__subtitle" @click="onClickPost">
+          <h5>{{ post.post_subtitle }}</h5>
         </v-card-subtitle>
 
-        <v-card-text class="posts-list-item__content">
+        <v-card-text class="posts-list-item__content" @click="onClickPost">
           {{ content }}
         </v-card-text>
 
@@ -243,11 +247,9 @@ export default class PostsListItem extends Vue {
     cursor: pointer;
   }
   &__title {
-    font-size: 2rem !important;
   }
 
   &__subtitle {
-    font-size: 1.6rem !important;
     color: map-get($colors, primary) !important;
     font-style: italic;
   }
@@ -255,7 +257,7 @@ export default class PostsListItem extends Vue {
   &__content {
     display: flex !important;
     text-overflow: ellipsis !important;
-    font-size: 1.1rem !important;
+    font-size: 1.5rem !important;
     color: map-get($colors, secondary) !important;
     line-height: 1.4 !important;
   }
@@ -282,12 +284,12 @@ export default class PostsListItem extends Vue {
     align-items: center;
 
     &-author {
-      font-size: 1rem;
+      font-size: 1.6rem;
       font-weight: 300;
     }
 
     &-date {
-      font-size: 1rem;
+      font-size: 1.6rem;
       color: grey;
       margin-left: 1rem;
       font-style: italic;
@@ -302,7 +304,7 @@ export default class PostsListItem extends Vue {
   }
 
   &__like-count {
-    font-size: 1.15rem;
+    font-size: 1.6rem;
     color: grey;
     margin: 0.5rem;
   }

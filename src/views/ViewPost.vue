@@ -2,9 +2,9 @@
   <v-card class="mx-auto mt-5 view-post" outlined>
     <v-container class="view-post__content">
       <v-card-title class="view-post__title">
-        <h3>
+        <h2>
           {{ post.title }}
-        </h3>
+        </h2>
       </v-card-title>
       <v-card-subtitle class="view-post__subtitle">
         <h4>
@@ -88,21 +88,28 @@ export default class ViewPost extends Vue {
    * and display the content on the page
    */
   formatContentParagraphs(post: any) {
-    const DIFF = 500;
-    let len = this.post.content.length;
-    let interval = DIFF;
+    const len = this.post.content.length;
     let beginningIndex = 0;
+    const INTERVAL = 500;
+    let count = INTERVAL;
+    const contentArray: string[] = [...post.content];
 
-    while (len >= DIFF) {
-      this.paragraphs.push(post.content.substring(beginningIndex, interval));
-      beginningIndex += DIFF;
-      interval += DIFF;
-      len -= DIFF;
+    // cut up content into 500 word chunks
+    for (let index = 0; index < contentArray.length; index++) {
+      if (index >= count && contentArray[index].includes(".")) {
+        const substr = post.content.substring(beginningIndex, index + 1);
+        this.paragraphs.push(substr);
+        beginningIndex = index + 1;
+        count += INTERVAL;
+      }
+
+      // if one chunk remains that is less than 500, insert it at the end of the array
+      if (len - beginningIndex <= 500) {
+        const substr = post.content.substring(beginningIndex, len);
+        this.paragraphs.push(substr);
+        break;
+      }
     }
-
-    this.paragraphs.push(
-      post.content.substring(beginningIndex, beginningIndex + len)
-    );
   }
 }
 </script>

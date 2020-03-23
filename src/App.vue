@@ -212,4 +212,8 @@ export default class App extends Vue {
 .nav-user {
   font-size: 1rem;
 }
+
+.menu-icon {
+  font-size: 1.35rem !important;
+}
 </style>
