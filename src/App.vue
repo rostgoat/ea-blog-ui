@@ -15,7 +15,7 @@
       </v-app-bar-nav-icon>
       <v-toolbar-title>
         <router-link to="/" tag="span" style="cursor: pointer">
-          EA Games Blog
+          <v-img :src="imgSrc"></v-img>
         </router-link>
       </v-toolbar-title>
       <v-spacer></v-spacer>
@@ -83,6 +83,13 @@ export default class App extends Vue {
    */
   get loggedInUser() {
     return UsersModule.GET_USER;
+  }
+
+  /**
+   * Load image from post
+   */
+  get imgSrc() {
+    return require("../public/logo_gb.png");
   }
 
   mounted() {

@@ -1,6 +1,6 @@
 <template>
   <v-card class="mx-auto mt-5 posts-list-item" outlined>
-    <v-container class="posts-list-item__content">
+    <v-container class="posts-list-item__content" @click="onClickPost">
       <v-card flat class="posts-list-item__container posts-list-item__image">
         <v-img
           id="photo"
@@ -110,6 +110,13 @@ export default class PostsListItem extends Vue {
   async mounted() {
     this.count = await this.getLikesCount();
     this.trimPostContentLength();
+  }
+
+  /**
+   * Redirect to specific post view
+   */
+  onClickPost() {
+    this.$router.push(`/view/${this.post.p_uid}`, this.post);
   }
 
   /**
