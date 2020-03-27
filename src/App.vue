@@ -104,7 +104,7 @@ export default class App extends Vue {
    */
   beforeRouteEnter(to: Route, from: Route, next: any) {
     next((vm: any) => {
-      console.log("vm.UsersModule.loggedInUser: ", vm.UsersModule.loggedInUser);
+      // console.log("vm.UsersModule.loggedInUser: ", vm.UsersModule.loggedInUser);
       vm.UsersModule.loggedInUser;
       next();
     });
@@ -211,9 +211,5 @@ export default class App extends Vue {
 
 .nav-user {
   font-size: 1rem;
-}
-
-.menu-icon {
-  font-size: 1.35rem !important;
 }
 </style>

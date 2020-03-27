@@ -116,8 +116,4 @@ export default class Login extends Mixins<SuccessMixin>(SuccessMixin) {
   justify-content: center;
   cursor: pointer;
 }
-
-.register-link {
-  font-size: 1.6rem;
-}
 </style>
