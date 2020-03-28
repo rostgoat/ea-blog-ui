@@ -18,7 +18,9 @@ import { GET_USERNAME, GET_USER } from '../types/getters';
   name: "users",
   store,
   dynamic: true,
-  preserveState: localStorage.getItem('users') !== null
+  // Used this in Heroku... might have to come back to this
+  // preserveState: localStorage.getItem('users') !== null 
+  preserveState: true
 })
 class Users extends VuexModule {
   public username = "";

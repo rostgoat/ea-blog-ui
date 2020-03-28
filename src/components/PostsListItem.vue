@@ -54,7 +54,7 @@
             </v-btn>
 
             <div class="posts-list-item__like-count">
-              {{ count }}
+              {{ count > 0 ? count : "" }}
             </div>
           </v-row>
         </div>
@@ -129,7 +129,7 @@ export default class PostsListItem extends Vue {
   trimPostContentLength() {
     const len = this.postLength;
     if (len > 1000) {
-      this.content += `${this.post.post_content.substring(0, 500)}...`;
+      this.content += `${this.post.post_content.substring(0, 350)}...`;
       return this.content;
     }
   }
@@ -248,6 +248,8 @@ export default class PostsListItem extends Vue {
     cursor: pointer;
   }
   &__title {
+    margin-bottom: 0.5rem !important;
+    margin-top: 0.5rem !important;
     padding: 0px !important;
   }
 
@@ -258,10 +260,12 @@ export default class PostsListItem extends Vue {
   }
 
   &__content {
+    padding: 0 !important;
     display: flex !important;
     text-overflow: ellipsis !important;
     font-size: 1.5rem !important;
     color: map-get($colors, secondary) !important;
+    text-align: justify;
     line-height: 1.4 !important;
   }
 
@@ -304,7 +308,7 @@ export default class PostsListItem extends Vue {
   }
 
   &__like-count {
-    font-size: 1.6rem;
+    // font-size: 1.6rem;
     color: grey;
     margin: 0.5rem;
   }
