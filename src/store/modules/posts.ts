@@ -24,6 +24,7 @@ import { SET_POSTS, SET_LIKE_PROPS, SET_LIKES } from "../types/mutations";
   store,
   dynamic: true,
   preserveState: true
+  // preserveState: localStorage.getItem('posts') !== null
 })
 class Posts extends VuexModule {
   public posts: any[] = [];

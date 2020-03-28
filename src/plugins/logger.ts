@@ -92,7 +92,7 @@ class NestLogger {
 
   constructor() {
     this.prefix = "EA API";
-    this.debug = process.env.VUE_APP_ENV !== "production";
+    this.debug = process.env.NODE_ENV !== "production";
   }
 
   public install(Vue: any) {

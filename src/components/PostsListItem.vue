@@ -17,12 +17,12 @@
         flat
         class="posts-list-item__container posts-list-item__description"
       >
-        <v-card-title class="mb-4 posts-list-item__title" @click="onClickPost">
-          <h3>{{ post.post_title }}</h3></v-card-title
-        >
+        <v-card-title class="posts-list-item__title" @click="onClickPost">
+          <h5>{{ post.post_title }}</h5>
+        </v-card-title>
 
         <v-card-subtitle class="posts-list-item__subtitle" @click="onClickPost">
-          <h5>{{ post.post_subtitle }}</h5>
+          <h6>{{ post.post_subtitle }}</h6>
         </v-card-subtitle>
 
         <v-card-text class="posts-list-item__content" @click="onClickPost">
@@ -54,7 +54,7 @@
             </v-btn>
 
             <div class="posts-list-item__like-count">
-              {{ count }}
+              {{ count > 0 ? count : "" }}
             </div>
           </v-row>
         </div>
@@ -129,7 +129,7 @@ export default class PostsListItem extends Vue {
   trimPostContentLength() {
     const len = this.postLength;
     if (len > 1000) {
-      this.content += `${this.post.post_content.substring(0, 500)}...`;
+      this.content += `${this.post.post_content.substring(0, 350)}...`;
       return this.content;
     }
   }
@@ -240,6 +240,7 @@ export default class PostsListItem extends Vue {
   width: 90% !important;
   margin: auto !important;
   transition: all 0.3s ease !important;
+  min-width: 0;
 
   &:hover {
     transform: translateY(-2px);
@@ -247,18 +248,24 @@ export default class PostsListItem extends Vue {
     cursor: pointer;
   }
   &__title {
+    margin-bottom: 0.5rem !important;
+    margin-top: 0.5rem !important;
+    padding: 0px !important;
   }
 
   &__subtitle {
     color: map-get($colors, primary) !important;
     font-style: italic;
+    padding: 0px !important;
   }
 
   &__content {
+    padding: 0 !important;
     display: flex !important;
     text-overflow: ellipsis !important;
     font-size: 1.5rem !important;
     color: map-get($colors, secondary) !important;
+    text-align: justify;
     line-height: 1.4 !important;
   }
 
@@ -273,30 +280,27 @@ export default class PostsListItem extends Vue {
   &__description {
     width: 66%;
     display: grid !important;
-    grid-template-rows: 25% 10% auto 25%;
+    grid-template-rows: none;
   }
 
   &__actions {
     display: flex;
-    margin: 1rem;
     margin-right: 4rem;
     justify-content: center;
     align-items: center;
+    font-size: 1rem;
 
     &-author {
-      font-size: 1.6rem;
       font-weight: 300;
     }
 
     &-date {
-      font-size: 1.6rem;
       color: grey;
       margin-left: 1rem;
       font-style: italic;
     }
 
     &-buttons {
-      font-size: 0.8rem;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -304,7 +308,7 @@ export default class PostsListItem extends Vue {
   }
 
   &__like-count {
-    font-size: 1.6rem;
+    // font-size: 1.6rem;
     color: grey;
     margin: 0.5rem;
   }

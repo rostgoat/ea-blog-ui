@@ -20,7 +20,7 @@ html {
   body {
     padding: 0;
     margin: 0;
-    font-size: 1.6rem;
+    font-size: 1rem;
     line-height: 2;
     font-family: map-get($fonts, primary), 'Trebuchet MS', Arial, sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI',
       Roboto, 'Helvetica Neue';
@@ -73,7 +73,7 @@ html {
   }
   
   h6 {
-    font-size: 2rem;
+    font-size: 1.7rem;
     line-height: 2.7rem;
     letter-spacing: 0.015rem;
   }

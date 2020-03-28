@@ -18,6 +18,8 @@ import { GET_USERNAME, GET_USER } from '../types/getters';
   name: "users",
   store,
   dynamic: true,
+  // Used this in Heroku... might have to come back to this
+  // preserveState: localStorage.getItem('users') !== null 
   preserveState: true
 })
 class Users extends VuexModule {
@@ -50,6 +52,7 @@ class Users extends VuexModule {
   async [REGISTER_USER](params: UserSubmitRegister) {
     await register(params);
   }
+
 
   @Action({ rawError: true })
   async [LOGIN_USER](params: UserSubmitLogin) {
