@@ -7,3 +7,11 @@ export const upload = (data: any) => {
     data
   });
 };
+
+export const signedUrl = (params: any) => {
+  return request({
+    url: "/photos/signedUrl",
+    method: "get",
+    params
+  })
+}

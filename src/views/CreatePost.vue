@@ -64,7 +64,7 @@ export default class CreatePost extends Mixins<SuccessMixin>(SuccessMixin) {
       "Title Length needs to be between 0 to 100 characters."
   ];
 
-  post_image_uid = "";
+  post_image_bucket_key = "";
 
   /**
    * Get user from state
@@ -79,8 +79,7 @@ export default class CreatePost extends Mixins<SuccessMixin>(SuccessMixin) {
    */
   onImageUploaded(response: any) {
     if (response) {
-      this.$successMixinMessage("Image Uploaded Succesfully!");
-      this.post_image_uid = response.uid;
+      this.post_image_bucket_key = response;
     }
   }
 
@@ -94,7 +93,7 @@ export default class CreatePost extends Mixins<SuccessMixin>(SuccessMixin) {
       sub_title: this.postCreateForm.postSubTitle,
       content: this.postCreateForm.postContent,
       user_uid: this.loggedInUser.uid,
-      post_image_uid: this.post_image_uid
+      post_image_bucket_key: this.post_image_bucket_key
     };
 
     try {

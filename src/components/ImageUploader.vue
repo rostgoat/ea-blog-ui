@@ -112,6 +112,8 @@ export default class ImageUploader extends Vue {
       this.selectedImageName
     );
 
+    formData.append(this.loggedInUser.name, this.loggedInUser.uid);
+
     // upload image to database
     await this.onImageUpload(formData);
   }

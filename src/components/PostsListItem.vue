@@ -9,7 +9,7 @@
         <v-img
           id="photo"
           class="pa-2 posts-list-item__img"
-          :src="imgSrc"
+          :src="imageSource"
           aspect-ratio="1.7"
         ></v-img>
       </v-card>
@@ -67,6 +67,7 @@
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 import { like, unlike, relike, likesCount } from "@/api/likes";
+import { signedUrl } from "@/api/photos";
 import { UsersModule } from "@/store/modules/users";
 import { PostsModule } from "@/store/modules/posts";
 import moment from "moment";
@@ -80,12 +81,7 @@ export default class PostsListItem extends Vue {
   content = "";
   count: number | Promise<any> = 0;
 
-  /**
-   * Load image from post
-   */
-  get imgSrc() {
-    return `${process.env.VUE_APP_BASE_URL}/${this.post.photo_title}`;
-  }
+  imageSource = "";
 
   /**
    * Get user from state
@@ -114,6 +110,26 @@ export default class PostsListItem extends Vue {
   async mounted() {
     this.count = await this.getLikesCount();
     this.trimPostContentLength();
+    this.getImageURL();
+  }
+
+  async getImageURL() {
+    console.log("this.post", this.post);
+    const res = await signedUrl({
+      bucket: this.post.bucket,
+      key: this.post.post_image_bucket_key
+    });
+    console.log("res", res);
+    this.imageSource = "data:image/jpeg;base64," + this.encode(res.Body.data);
+
+    console.log("this.imageSource", this.imageSource);
+  }
+
+  encode(data: any) {
+    const str = data.reduce((a: any, b: any) => {
+      return a + String.fromCharCode(b);
+    }, "");
+    return btoa(str).replace(/.{76}(?=.)/g, "$&\n");
   }
 
   /**
