@@ -23,7 +23,7 @@
         <v-img
           id="photo"
           class="pa-2 posts-list-item__img"
-          :src="postImage"
+          :src="imageSource"
           aspect-ratio="2.4"
           width="500"
           contain
@@ -46,14 +46,16 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { getOne } from "../api/posts";
 import moment from "moment";
+import StorageMixin from "../mixins/storage";
+import { Mixins } from "vue-mixin-decorator";
 
 @Component
-export default class ViewPost extends Vue {
+export default class ViewPost extends Mixins<StorageMixin>(StorageMixin) {
   post: any = {};
   postUID = "";
   postDate: any = "";
   postAuthor = "";
-  postImage = "";
+  imageSource = "";
 
   paragraphs: string[] = [];
 
@@ -73,7 +75,17 @@ export default class ViewPost extends Vue {
     this.formatContentParagraphs(this.post);
     this.formatPostCreatedDate(this.post.created_at);
     this.postAuthor = this.post.user.name;
-    this.postImage = `${process.env.VUE_APP_BASE_URL}/${this.post.photo.title}`;
+    this.imageSource = await this.getImageURL();
+  }
+
+  /**
+   * Get signed url from s3
+   */
+  async getImageURL() {
+    return await this.$storageMixinGetSignedURL(
+      process.env.VUE_APP_AWS_BUCKET,
+      this.post.post_image_bucket_key
+    );
   }
 
   /**
