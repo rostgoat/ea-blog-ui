@@ -2,7 +2,7 @@ import request from "@/utils/request";
 
 export const upload = (data: any) => {
   return request({
-    url: "/photos/upload",
+    url: "/storage/upload",
     method: "post",
     data
   });
@@ -10,7 +10,7 @@ export const upload = (data: any) => {
 
 export const signedUrl = (params: any) => {
   return request({
-    url: "/photos/signedUrl",
+    url: "/storage/signedUrl",
     method: "get",
     params
   })

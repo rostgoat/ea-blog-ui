@@ -23,7 +23,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import { upload } from "@/api/photos";
+import { upload } from "@/api/storage";
 import { UsersModule } from "@/store/modules/users";
 
 @Component
@@ -105,12 +105,13 @@ export default class ImageUploader extends Vue {
 
     const formData = new FormData();
 
-    // add image info to formdata
-    formData.append(
-      this.uploadFieldName,
-      this.selectedImage,
+    // create unique name to store key into bucket
+    const uniqueImageName = `${this.loggedInUser.uid}-${Date.now()}-${
       this.selectedImageName
-    );
+    }`;
+
+    // add image info to formdata
+    formData.append(this.uploadFieldName, this.selectedImage, uniqueImageName);
 
     formData.append(this.loggedInUser.name, this.loggedInUser.uid);
 

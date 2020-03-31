@@ -67,7 +67,7 @@
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 import { like, unlike, relike, likesCount } from "@/api/likes";
-import { signedUrl } from "@/api/photos";
+import { signedUrl } from "@/api/storage";
 import { UsersModule } from "@/store/modules/users";
 import { PostsModule } from "@/store/modules/posts";
 import moment from "moment";
@@ -113,23 +113,15 @@ export default class PostsListItem extends Vue {
     this.getImageURL();
   }
 
+  /**
+   * Get signed url from s3
+   */
   async getImageURL() {
-    console.log("this.post", this.post);
     const res = await signedUrl({
-      bucket: this.post.bucket,
+      bucket: process.env.VUE_APP_AWS_BUCKET,
       key: this.post.post_image_bucket_key
     });
-    console.log("res", res);
-    this.imageSource = "data:image/jpeg;base64," + this.encode(res.Body.data);
-
-    console.log("this.imageSource", this.imageSource);
-  }
-
-  encode(data: any) {
-    const str = data.reduce((a: any, b: any) => {
-      return a + String.fromCharCode(b);
-    }, "");
-    return btoa(str).replace(/.{76}(?=.)/g, "$&\n");
+    this.imageSource = res;
   }
 
   /**
