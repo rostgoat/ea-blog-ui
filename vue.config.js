@@ -1,11 +1,10 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require("path");
-const DEBUG = process.env.NODE_ENV !== "production";
-console.log("process.env.NODE_ENV config- ", process.env.NODE_ENV);
+
 module.exports = {
   outputDir: path.resolve(__dirname, "../ea-blog-api/public"),
   devServer: {
-    proxy: DEBUG ? "http://localhost:3000" : "https://game-bible.herokuapp.com"
+    proxy: process.env.VUE_APP_BASE_URL
   },
   css: {
     loaderOptions: {

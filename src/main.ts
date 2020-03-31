@@ -12,7 +12,6 @@ import ElementUI from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 
 async function start() {
-  console.log('process.env.VUE_APP_BASE_URL', process.env.VUE_APP_BASE_URL)
   const router = new CustomRouter().initialize();
   const serverUrl = process.env.VUE_APP_BASE_URL;
   const socket = io(serverUrl);
