@@ -6,12 +6,14 @@
         class="posts-list-item__container posts-list-item__image"
         @click="onClickPost"
       >
-        <v-img
-          id="photo"
-          class="pa-2 posts-list-item__img"
-          :src="imgSrc"
-          aspect-ratio="1.7"
-        ></v-img>
+        <div class="pa-2 posts-list-item__img">
+          <v-img
+            id="photo"
+            :src="imageSource"
+            aspect-ratio="1.7"
+            contain
+          ></v-img>
+        </div>
       </v-card>
       <v-card
         flat
@@ -71,21 +73,18 @@ import { UsersModule } from "@/store/modules/users";
 import { PostsModule } from "@/store/modules/posts";
 import moment from "moment";
 import * as _ from "lodash";
+import StorageMixin from "../mixins/storage";
+import { Mixins } from "vue-mixin-decorator";
 
 @Component
-export default class PostsListItem extends Vue {
+export default class PostsListItem extends Mixins<StorageMixin>(StorageMixin) {
   name = "PostsListItem";
   @Prop() post!: any;
 
   content = "";
   count: number | Promise<any> = 0;
 
-  /**
-   * Load image from post
-   */
-  get imgSrc() {
-    return `${process.env.VUE_APP_BASE_URL}/${this.post.photo_title}`;
-  }
+  imageSource = "";
 
   /**
    * Get user from state
@@ -114,6 +113,17 @@ export default class PostsListItem extends Vue {
   async mounted() {
     this.count = await this.getLikesCount();
     this.trimPostContentLength();
+    this.getImageURL();
+  }
+
+  /**
+   * Get signed url from s3
+   */
+  async getImageURL() {
+    this.imageSource = await this.$storageMixinGetSignedURL(
+      process.env.VUE_APP_AWS_BUCKET,
+      this.post.post_image_bucket_key
+    );
   }
 
   /**
@@ -247,6 +257,10 @@ export default class PostsListItem extends Vue {
     box-shadow: map-get($box-shadows, boxShadowDark);
     cursor: pointer;
   }
+  &__img {
+    margin: 0.3rem;
+  }
+
   &__title {
     margin-bottom: 0.5rem !important;
     margin-top: 0.5rem !important;
