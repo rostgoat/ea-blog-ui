@@ -2,14 +2,14 @@
   <v-card class="mx-auto mt-5 view-post" max-width="50%" outlined>
     <v-container class="view-post__content">
       <v-card-title class="view-post__title">
-        <h2>
+        <h1>
           {{ post.title }}
-        </h2>
+        </h1>
       </v-card-title>
       <v-card-subtitle class="view-post__subtitle">
-        <h4>
+        <h3>
           {{ post.sub_title }}
-        </h4>
+        </h3>
       </v-card-subtitle>
       <div class="view-post__details-container">
         <div class="view-post__details-container--created-by">
@@ -131,10 +131,13 @@ export default class ViewPost extends Mixins<StorageMixin>(StorageMixin) {
 .view-post {
   &__title {
     padding: 0px !important;
+    margin-bottom: 1rem;
   }
 
   &__subtitle {
     padding: 0px !important;
+    color: map-get($colors, primary) !important;
+    font-style: italic !important;
   }
 
   &__description {

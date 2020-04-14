@@ -1,13 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      dark
-      fixed
-      class="default-layout__navbar"
-      extended
-      extension-height="3"
-    >
+    <v-app-bar app dark fixed extended extension-height="3">
       <v-app-bar-nav-icon
         @click.native.stop="sideNav = !sideNav"
         class="hidden-sm-and-up"
@@ -70,7 +63,6 @@ export default class App extends Vue {
   items = [
     { icon: "mdi-lead-pencil", title: "Create Post" },
     { icon: "mdi-book-open", title: "Manage Posts" },
-    { icon: "mdi-cogs", title: "Settings" },
     { icon: "mdi-lock-open", title: "Login" },
     { icon: "mdi-lock", title: "Logout" }
   ];
@@ -128,7 +120,6 @@ export default class App extends Vue {
       this.items.unshift(
         { icon: "mdi-lead-pencil", title: "Create Post" },
         { icon: "mdi-book-open", title: "Manage Posts" },
-        { icon: "mdi-cogs", title: "Settings" },
         { icon: "mdi-lock", title: "Logout" }
       );
     } else {
@@ -212,7 +203,12 @@ export default class App extends Vue {
   font-size: 1rem;
 }
 
-.v-btn__content {
-  font-size: 1.2rem !important;
+.v-btn {
+  letter-spacing: 0.3px !important;
+  font-weight: 400 !important;
+
+  &__content {
+    // font-size: 1.2rem !important;
+  }
 }
 </style>

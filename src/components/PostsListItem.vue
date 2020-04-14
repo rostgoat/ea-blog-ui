@@ -20,11 +20,11 @@
         class="posts-list-item__container posts-list-item__description"
       >
         <v-card-title class="posts-list-item__title" @click="onClickPost">
-          <h5>{{ post.post_title }}</h5>
+          <h2>{{ post.post_title }}</h2>
         </v-card-title>
 
         <v-card-subtitle class="posts-list-item__subtitle" @click="onClickPost">
-          <h6>{{ post.post_subtitle }}</h6>
+          <h4>{{ post.post_subtitle }}</h4>
         </v-card-subtitle>
 
         <v-card-text class="posts-list-item__content" @click="onClickPost">
@@ -264,12 +264,13 @@ export default class PostsListItem extends Mixins<StorageMixin>(StorageMixin) {
   &__title {
     margin-bottom: 0.5rem !important;
     margin-top: 0.5rem !important;
+    margin-bottom: 1rem !important;
     padding: 0px !important;
   }
 
   &__subtitle {
     color: map-get($colors, primary) !important;
-    font-style: italic;
+    font-style: italic !important;
     padding: 0px !important;
   }
 
@@ -277,10 +278,10 @@ export default class PostsListItem extends Mixins<StorageMixin>(StorageMixin) {
     padding: 0 !important;
     display: flex !important;
     text-overflow: ellipsis !important;
-    font-size: 1.5rem !important;
     color: map-get($colors, secondary) !important;
     text-align: justify;
     line-height: 1.4 !important;
+    font-size: 1rem !important;
   }
 
   &__container {

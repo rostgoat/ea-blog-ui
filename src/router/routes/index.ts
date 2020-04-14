@@ -3,6 +3,7 @@ import Login from "../../views/Login.vue";
 import Register from "../../views/Register.vue";
 import CreatePost from "../../views/CreatePost.vue";
 import ManagePosts from "../../views/ManagePosts.vue";
+import ViewPost from "../../views/ViewPost.vue";
 import Settings from "../../views/Settings.vue";
 
 export default [
@@ -38,17 +39,9 @@ export default [
     }
   },
   {
-    path: "/settings",
-    name: "settings",
-    component: Settings,
-    meta: {
-      requiresAuth: true
-    }
-  },
-  {
     path: "/view/:id",
     name: "view-post",
-    component: () => import('@/views/ViewPost.vue'),
+    component: ViewPost,
     meta: {
       requiresAuth: true
     }
