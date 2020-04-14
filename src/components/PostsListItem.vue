@@ -24,7 +24,7 @@
         </v-card-title>
 
         <v-card-subtitle class="posts-list-item__subtitle" @click="onClickPost">
-          <h4>{{ post.post_subtitle }}</h4>
+          <h3>{{ post.post_subtitle }}</h3>
         </v-card-subtitle>
 
         <v-card-text class="posts-list-item__post-content" @click="onClickPost">
@@ -342,7 +342,6 @@ export default class PostsListItem extends Mixins<StorageMixin>(StorageMixin) {
     margin-right: 4rem;
     justify-content: center;
     align-items: center;
-    font-size: 1rem;
 
     &-author {
       font-weight: 300;
