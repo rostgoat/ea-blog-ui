@@ -24,7 +24,6 @@
           v-for="item in items"
           :key="item.title"
           @click="onClickMenuItem(item.title)"
-          class="menu-icon"
         >
           <v-icon left dark>{{ item.icon }}</v-icon>
           {{ item.title }}
@@ -211,5 +210,9 @@ export default class App extends Vue {
 
 .nav-user {
   font-size: 1rem;
+}
+
+.v-btn__content {
+  font-size: 1.2rem !important;
 }
 </style>

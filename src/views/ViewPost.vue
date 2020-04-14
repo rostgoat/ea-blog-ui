@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mx-auto mt-5 view-post" outlined>
+  <v-card class="mx-auto mt-5 view-post" max-width="50%" outlined>
     <v-container class="view-post__content">
       <v-card-title class="view-post__title">
         <h2>
@@ -25,7 +25,8 @@
           class="pa-2 posts-list-item__img"
           :src="imageSource"
           aspect-ratio="2.4"
-          width="500"
+          width="400"
+          height="400"
           contain
         ></v-img>
       </div>
