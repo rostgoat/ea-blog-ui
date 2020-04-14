@@ -27,7 +27,7 @@
           <h4>{{ post.post_subtitle }}</h4>
         </v-card-subtitle>
 
-        <v-card-text class="posts-list-item__content" @click="onClickPost">
+        <v-card-text class="posts-list-item__post-content" @click="onClickPost">
           {{ content }}
         </v-card-text>
 
@@ -262,16 +262,44 @@ export default class PostsListItem extends Mixins<StorageMixin>(StorageMixin) {
   }
 
   &__title {
-    margin-bottom: 0.5rem !important;
     margin-top: 0.5rem !important;
     margin-bottom: 1rem !important;
     padding: 0px !important;
+
+    @media (max-width: 900px) {
+      font-size: 1.7rem;
+      line-height: 2rem;
+      letter-spacing: 0.03rem;
+      margin-top: 0.5rem !important;
+      margin-bottom: 2rem !important;
+    }
   }
 
   &__subtitle {
     color: map-get($colors, primary) !important;
     font-style: italic !important;
     padding: 0px !important;
+
+    @media (max-width: 900px) {
+      font-size: 1.3rem;
+      line-height: 1.6rem;
+      letter-spacing: 0.03rem;
+      margin-bottom: 1rem !important;
+    }
+  }
+
+  &__post-content {
+    padding: 0 !important;
+    display: flex !important;
+    text-overflow: ellipsis !important;
+    color: map-get($colors, secondary) !important;
+    text-align: justify;
+    line-height: 1.4 !important;
+    font-size: 1rem !important;
+
+    @media (max-width: 900px) {
+      flex-direction: column;
+    }
   }
 
   &__content {
@@ -280,8 +308,11 @@ export default class PostsListItem extends Mixins<StorageMixin>(StorageMixin) {
     text-overflow: ellipsis !important;
     color: map-get($colors, secondary) !important;
     text-align: justify;
-    line-height: 1.4 !important;
-    font-size: 1rem !important;
+
+    @media (max-width: 900px) {
+      display: flex !important;
+      flex-direction: column !important;
+    }
   }
 
   &__container {
@@ -290,12 +321,20 @@ export default class PostsListItem extends Mixins<StorageMixin>(StorageMixin) {
 
   &__image {
     width: 33%;
+
+    @media (max-width: 900px) {
+      width: 100%;
+    }
   }
 
   &__description {
     width: 66%;
     display: grid !important;
     grid-template-rows: none;
+
+    @media (max-width: 900px) {
+      width: 100%;
+    }
   }
 
   &__actions {
@@ -323,7 +362,6 @@ export default class PostsListItem extends Mixins<StorageMixin>(StorageMixin) {
   }
 
   &__like-count {
-    // font-size: 1.6rem;
     color: grey;
     margin: 0.5rem;
   }
