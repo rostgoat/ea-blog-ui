@@ -30,14 +30,14 @@ export default [
       requiresAuth: true
     }
   },
-  {
-    path: "/manage-posts",
-    name: "manage-posts",
-    component: ManagePosts,
-    meta: {
-      requiresAuth: true
-    }
-  },
+  // {
+  //   path: "/manage-posts",
+  //   name: "manage-posts",
+  //   component: ManagePosts,
+  //   meta: {
+  //     requiresAuth: true
+  //   }
+  // },
   {
     path: "/view/:id",
     name: "view-post",

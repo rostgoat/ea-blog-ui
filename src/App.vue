@@ -62,7 +62,7 @@ export default class App extends Vue {
   loading = false;
   items = [
     { icon: "mdi-lead-pencil", title: "Create Post" },
-    { icon: "mdi-book-open", title: "Manage Posts" },
+    // { icon: "mdi-book-open", title: "Manage Posts" },
     { icon: "mdi-lock-open", title: "Login" },
     { icon: "mdi-lock", title: "Logout" }
   ];
@@ -119,7 +119,7 @@ export default class App extends Vue {
       this.items = [];
       this.items.unshift(
         { icon: "mdi-lead-pencil", title: "Create Post" },
-        { icon: "mdi-book-open", title: "Manage Posts" },
+        // { icon: "mdi-book-open", title: "Manage Posts" },
         { icon: "mdi-lock", title: "Logout" }
       );
     } else {

@@ -32,9 +32,16 @@ export const get = () => {
 };
 
 export const getOne = (params: any) => {
-  console.log('params', params)
   return request({
     url: `/posts/findOne`,
+    method: "get",
+    params
+  });
+};
+
+export const getOneByUser = (params: any) => {
+  return request({
+    url: `/posts/findAllByUserUID`,
     method: "get",
     params
   });
