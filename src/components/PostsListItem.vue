@@ -75,6 +75,7 @@ import moment from "moment";
 import * as _ from "lodash";
 import StorageMixin from "../mixins/storage";
 import { Mixins } from "vue-mixin-decorator";
+import { Message } from "element-ui";
 
 @Component
 export default class PostsListItem extends Mixins<StorageMixin>(StorageMixin) {
@@ -155,6 +156,14 @@ export default class PostsListItem extends Mixins<StorageMixin>(StorageMixin) {
    * Event handler for liking, unliking and reliking a post
    */
   async onClickLikePost() {
+    // throw error if an unregisted user is trying to like the post
+    if (!this.loggedInUser.uid) {
+      return Message({
+        message: `You need to be logged in to like this post!`,
+        type: "error",
+        duration: 5 * 1000
+      });
+    }
     // check if `likes` prop exists on post - if not then create it
     if (!_.has(this.post, "likes")) {
       await PostsModule.CREATE_LIKES({ post_uid: this.post.p_uid });
