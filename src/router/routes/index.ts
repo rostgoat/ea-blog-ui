@@ -42,8 +42,6 @@ export default [
     path: "/view/:id",
     name: "view-post",
     component: ViewPost,
-    meta: {
-      requiresAuth: true
-    }
+    
   }
 ];
