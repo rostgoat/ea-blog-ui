@@ -206,9 +206,10 @@ export default class App extends Vue {
 .v-btn {
   letter-spacing: 0.3px !important;
   font-weight: 400 !important;
-
-  &__content {
-    // font-size: 1.2rem !important;
-  }
+  font-size: 1.2rem !important;
+}
+.v-btn.v-size--default,
+.v-btn.v-size--large {
+  font-size: 1.2rem !important;
 }
 </style>

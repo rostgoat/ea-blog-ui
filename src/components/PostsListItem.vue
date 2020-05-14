@@ -304,7 +304,7 @@ export default class PostsListItem extends Mixins<StorageMixin>(StorageMixin) {
     color: map-get($colors, secondary) !important;
     text-align: justify;
     line-height: 1.4 !important;
-    font-size: 1rem !important;
+    font-size: 1.3rem !important;
 
     @media (max-width: 900px) {
       flex-direction: column;
@@ -326,6 +326,10 @@ export default class PostsListItem extends Mixins<StorageMixin>(StorageMixin) {
 
   &__container {
     margin: none !important;
+
+    @media (max-width: 900px) {
+      padding: 1rem !important;
+    }
   }
 
   &__image {
@@ -372,6 +376,10 @@ export default class PostsListItem extends Mixins<StorageMixin>(StorageMixin) {
   &__like-count {
     color: grey;
     margin: 0.5rem;
+  }
+
+  .v-card__title + .v-card__subtitle {
+    margin-top: -10px !important;
   }
 }
 </style>
