@@ -25,7 +25,7 @@
             required
           ></v-textarea>
           <ImageUploader @onImageUploaded="onImageUploaded" />
-          <v-card-actions>
+          <v-card-actions class="create-post-card__buttons">
             <v-btn color="danger" @click="onClickCancel">Cancel</v-btn>
             <v-spacer></v-spacer>
             <v-btn color="success" @click="onClickCreatePost">Create</v-btn>
@@ -124,9 +124,22 @@ export default class CreatePost extends Mixins<SuccessMixin>(SuccessMixin) {
 <style lang="scss">
 .create-post-card {
   @include center-card;
+  overflow: scroll !important;
+
+  @media screen and (min-height: 320px) and (max-height: 890px) {
+    height: 100%;
+  }
+  @media screen and (min-width: 320px) {
+    margin-top: 4rem;
+  }
 
   &__title {
     @include center-card__title;
+  }
+
+  &__buttons {
+    margin-bottom: 4rem;
+    margin-top: 1rem;
   }
 }
 </style>

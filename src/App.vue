@@ -196,6 +196,7 @@ export default class App extends Vue {
 .default-layout {
   &__main-content {
     transition: map-get($transitions, fade);
+    height: 100%;
   }
 }
 
@@ -211,5 +212,9 @@ export default class App extends Vue {
 .v-btn.v-size--default,
 .v-btn.v-size--large {
   font-size: 1.2rem !important;
+}
+
+.v-content__wrap {
+  height: 100% !important;
 }
 </style>
