@@ -13,7 +13,7 @@
     "@types/jquery": "^3.3.33",
     "@types/js-cookie": "^2.2.5",
     "@types/lodash": "^4.14.149",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "concat-stream": "^2.0.0",
     "core-js": "^3.6.4",
     "element-ui": "^2.13.0",
